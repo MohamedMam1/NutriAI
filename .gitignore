@@ -1,0 +1,121 @@
+# =========================
+# Build folders
+# =========================
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Ll]og/
+[Ll]ogs/
+
+# Ignore all nested build folders
+**/bin/
+**/obj/
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# Visual Studio
+# =========================
+.vs/
+*.suo
+*.user
+*.userosscache
+*.rsuser
+*.sln.docstates
+*.VC.db
+*.VC.VC.opendb
+
+# =========================
+# VS Code
+# =========================
+.vscode/
+*.code-workspace
+
+# =========================
+# JetBrains Rider / ReSharper
+# =========================
+.idea/
+*.sln.iml
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+diagnostics.xml
+LocalHistory/
+
+# =========================
+# Profilers
+# =========================
+*.psess
+*.vsp
+*.vspx
+*.sap
+*.nettrace
+*.nettrc
+
+# =========================
+# NuGet
+# =========================
+*.nupkg
+*.snupkg
+*.nuget.props
+*.nuget.targets
+packages.lock.json
+~/.nuget/
+
+# =========================
+# Test Results
+# =========================
+[Tt]est[Rr]esults/
+*.trx
+*.coverage
+
+# =========================
+# Temporary / Backup files
+# =========================
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Environment files
+# =========================
+.env
+.env.local
+.env.*.local
+
+# =========================
+# Application Insights
+# =========================
+ApplicationInsights.config
+.ApplicationInsights/
+
+# =========================
+# Misc
+# =========================
+healthchecksdb
+
+# =========================
+# ASP.NET App Settings
+# =========================
+appsettings.Development.json
+appsettings.Production.json
