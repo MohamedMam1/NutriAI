@@ -1,0 +1,102 @@
+@{
+    ViewData["Title"] = "Dashboard";
+    ViewData["ActiveNav"] = "Dashboard";
+}
+
+<div class="page-header fade-in">
+    <h1>Dashboard</h1>
+    <p class="subtitle">Your daily nutrition overview</p>
+</div>
+
+<div class="row g-4 mb-4 fade-in">
+    <div class="col-md-6 col-lg-3">
+        <div class="card-nutri hover-scale">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon green"><i class="fas fa-fire"></i></div>
+                <div>
+                    <p class="card-title mb-0">Calories Today</p>
+                    <p class="stat-value mb-0"><span id="caloriesConsumed">--</span> / <span id="caloriesGoal">--</span></p>
+                </div>
+            </div>
+            <div class="progress progress-nutri mt-3">
+                <div class="progress-bar" id="calorieProgress" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card-nutri hover-scale">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon blue"><i class="fas fa-weight-scale"></i></div>
+                <div>
+                    <p class="card-title mb-0">Current Weight</p>
+                    <p class="stat-value mb-0"><span id="currentWeight">--</span> kg</p>
+                </div>
+            </div>
+            <p class="small-text text-muted mt-2 mb-0">Goal: <span id="goalWeight">--</span> kg</p>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card-nutri hover-scale">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon blue"><i class="fas fa-droplet"></i></div>
+                <div>
+                    <p class="card-title mb-0">Water Intake</p>
+                    <p class="stat-value mb-0"><span id="waterMl">--</span> ml</p>
+                </div>
+            </div>
+            <div class="progress progress-nutri mt-3">
+                <div class="progress-bar bg-info" id="waterProgress" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card-nutri hover-scale">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon orange"><i class="fas fa-calendar-check"></i></div>
+                <div>
+                    <p class="card-title mb-0">Weekly Streak</p>
+                    <p class="stat-value mb-0"><span id="weeklyStreak">--</span> days</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-8">
+        <div class="card-nutri">
+            <h3 class="h5 mb-3">Calorie Tracking</h3>
+            <canvas id="calorieChart" height="120"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card-nutri insight-card mb-4">
+            <h3 class="h6 mb-2"><i class="fas fa-robot text-success me-2"></i>AI Insight</h3>
+            <p class="small-text mb-0" id="aiInsight">Loading insights...</p>
+        </div>
+        <div class="card-nutri">
+            <h3 class="h6 mb-3">Weight Progress</h3>
+            <canvas id="weightMiniChart" height="150"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card-nutri">
+            <h3 class="h5 mb-3">Recent Meals</h3>
+            <div id="recentMealsList"></div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card-nutri">
+            <h3 class="h5 mb-3">Saved Meal Plans</h3>
+            <div id="savedPlansList"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/dashboard.js" asp-append-version="true"></script>
+}
+

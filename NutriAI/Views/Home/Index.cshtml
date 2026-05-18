@@ -1,8 +1,16 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Welcome";
+    Layout = "_AuthLayout";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="auth-wrapper">
+    <div class="text-center fade-in" style="max-width: 560px;">
+        <h1 class="display-5 fw-bold text-success mb-3"><i class="fas fa-leaf me-2"></i>NutriAI</h1>
+        <p class="lead text-muted mb-4">AI-powered nutrition and calorie tracking for a healthier you.</p>
+        <div class="d-flex flex-wrap gap-3 justify-content-center">
+            <a asp-controller="Auth" asp-action="Login" class="btn btn-primary-nutri btn-lg px-4">Sign In</a>
+            <a asp-controller="Auth" asp-action="Register" class="btn btn-outline-nutri btn-lg px-4">Get Started</a>
+            <a asp-controller="Auth" asp-action="Login" class="btn btn-secondary-nutri btn-lg px-4">Sign In</a>
+        </div>
+    </div>
 </div>

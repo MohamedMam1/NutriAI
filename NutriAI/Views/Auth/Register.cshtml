@@ -1,0 +1,53 @@
+@model RegisterViewModel
+@{
+    Layout = "_AuthLayout";
+    ViewData["Title"] = "Register";
+}
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        
+        <div class="brand">
+            <h2><i class="fas fa-leaf"></i> NutriAI</h2>
+            <p>Create your account to get started.</p>
+        </div>
+        <form asp-action="Register" method="post" class="needs-validation" novalidate>
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="mb-3">
+                <label asp-for="FullName" class="form-label"></label>
+                <input asp-for="FullName" class="form-control form-control-nutri" />
+                <span asp-validation-for="FullName" class="text-danger small-text"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control form-control-nutri" />
+                <span asp-validation-for="Email" class="text-danger small-text"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label"></label>
+                <div class="input-group">
+                    <input asp-for="Password" class="form-control form-control-nutri" id="password" />
+                    <span class="input-group-text password-toggle" id="togglePassword"><i class="fas fa-eye"></i></span>
+                </div>
+                <span asp-validation-for="Password" class="text-danger small-text"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="ConfirmPassword" class="form-label"></label>
+                <div class="input-group">
+                    <input asp-for="ConfirmPassword" class="form-control form-control-nutri" id="confirmPassword" />
+                    <span class="input-group-text password-toggle" id="toggleConfirmPassword"><i class="fas fa-eye"></i></span>
+                </div>
+                <span asp-validation-for="ConfirmPassword" class="text-danger small-text"></span>
+            </div>
+            <button type="submit" class="btn btn-primary-nutri w-100 mb-3">Create Account</button>
+            <p class="text-center small-text text-muted mb-0">
+                Already have an account? <a asp-action="Login" class="text-success fw-semibold">Sign In</a>
+            </p>
+        </form>
+    </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/auth.js" asp-append-version="true"></script>
+}

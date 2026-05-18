@@ -1,0 +1,38 @@
+@{
+    ViewData["Title"] = "Meal Tracker";
+    ViewData["ActiveNav"] = "MealTracker";
+}
+
+<div class="page-header fade-in">
+    <h1>Meal Tracker</h1>
+    <p class="subtitle">Log meals and get AI nutrition analysis</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card-nutri">
+            <div class="chat-container" id="chatContainer"></div>
+            <div class="ai-loading" id="aiLoading">
+                <div class="spinner-nutri"></div>
+                <p class="text-muted">AI is analyzing your meal...</p>
+            </div>
+            <form id="mealForm" class="mt-3">
+                <div class="input-group">
+                    <input type="text" class="form-control form-control-nutri" id="mealInput" placeholder="Describe your meal (e.g. 2 eggs and toast)" required />
+                    <button type="submit" class="btn btn-primary-nutri"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card-nutri">
+            <h3 class="h6 mb-3">Today's Meals</h3>
+            <div id="mealHistoryList"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/mealtracker.js" asp-append-version="true"></script>
+}
+

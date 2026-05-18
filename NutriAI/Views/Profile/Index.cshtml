@@ -1,0 +1,66 @@
+@model ProfileViewModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActiveNav"] = "Profile";
+}
+
+<div class="page-header fade-in">
+    <h1>Profile</h1>
+    <p class="subtitle">Manage your personal information and goals</p>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card-nutri">
+            <form id="profileForm" class="needs-validation" novalidate>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control form-control-nutri" id="name" value="@Model.Name" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Age</label>
+                        <input type="number" class="form-control form-control-nutri" id="age" value="@Model.Age" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Gender</label>
+                        <select class="form-select form-control-nutri" id="gender">
+                            <option value="Male" selected="@(Model.Gender == "Male")">Male</option>
+                            <option value="Female" selected="@(Model.Gender == "Female")">Female</option>
+                            <option value="Other" selected="@(Model.Gender == "Other")">Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Height (cm)</label>
+                        <input type="number" class="form-control form-control-nutri" id="height" value="@Model.Height" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Current Weight (kg)</label>
+                        <input type="number" step="0.1" class="form-control form-control-nutri" id="currentWeight" value="@Model.CurrentWeight" required />
+                    </div>
+                                        <div class="col-md-6">
+                        <label class="form-label">Goal Weight (kg)</label>
+                        <input type="number" step="0.1" class="form-control form-control-nutri" id="goalWeight" value="@Model.GoalWeight" required />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Activity Level</label>
+                        <select class="form-select form-control-nutri" id="activityLevel">
+                            <option value="Sedentary">Sedentary</option>
+                            <option value="Lightly Active">Lightly Active</option>
+                            <option value="Moderately Active" selected="@(Model.ActivityLevel == "Moderately Active")">Moderately Active</option>
+                            <option value="Very Active">Very Active</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary-nutri">Save Profile</button>
+                    <a asp-controller="Auth" asp-action="ChangePassword" class="btn btn-outline-nutri">Change Password</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/profile.js" asp-append-version="true"></script>
+}

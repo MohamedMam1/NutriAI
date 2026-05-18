@@ -1,0 +1,46 @@
+@{
+    ViewData["Title"] = "Weekly Report";
+    ViewData["ActiveNav"] = "Report";
+}
+
+<div class="page-header fade-in">
+    <h1>Weekly Report</h1>
+    <p class="subtitle">Your fitness analytics for the past 7 days</p>
+</div>
+
+<div class="row g-4 mb-4" id="reportStats"></div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-6">
+        <div class="card-nutri">
+            <h3 class="h6 mb-3">Daily Calories</h3>
+            <canvas id="reportCalorieChart" height="120"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card-nutri">
+            <h3 class="h6 mb-3">Weight Trend</h3>
+            <canvas id="reportWeightChart" height="120"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card-nutri">
+            <h3 class="h6 mb-3">Hydration Consistency</h3>
+            <canvas id="reportHydrationChart" height="120"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card-nutri insight-card">
+            <h3 class="h6 mb-3"><i class="fas fa-robot text-success me-2"></i>AI Recommendations</h3>
+            <ul id="aiRecommendations" class="mb-0"></ul>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/report.js" asp-append-version="true"></script>
+}
+

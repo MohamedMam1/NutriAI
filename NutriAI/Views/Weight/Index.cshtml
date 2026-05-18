@@ -1,0 +1,63 @@
+@{
+    ViewData["Title"] = "Weight Tracker";
+    ViewData["ActiveNav"] = "Weight";
+}
+
+<div class="page-header fade-in">
+    <h1>Weight Tracker</h1>
+    <p class="subtitle">Track your weight and progress toward your goal</p>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card-nutri text-center hover-scale">
+            <p class="card-title">Current Weight</p>
+            <p class="stat-value text-success" id="displayCurrentWeight">--</p>
+            <span class="small-text text-muted">kg</span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-nutri text-center hover-scale">
+            <p class="card-title">Goal Weight</p>
+            <p class="stat-value text-primary" id="displayGoalWeight">--</p>
+            <span class="small-text text-muted">kg</span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-nutri text-center hover-scale">
+            <p class="card-title">To Go</p>
+            <p class="stat-value text-warning" id="weightToGo">--</p>
+            <span class="small-text text-muted">kg</span>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card-nutri">
+            <h3 class="h5 mb-3">Weight Progress</h3>
+            <canvas id="weightChart" height="100"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card-nutri mb-4">
+            <h3 class="h6 mb-3">Add Weight</h3>
+            <form id="weightForm">
+                <div class="mb-3">
+                    <label class="form-label">Weight (kg)</label>
+                    <input type="number" step="0.1" class="form-control form-control-nutri" id="weightInput" required />
+                </div>
+                <button type="submit" class="btn btn-primary-nutri w-100">Save</button>
+            </form>
+        </div>
+        <div class="card-nutri">
+            <h3 class="h6 mb-3">History</h3>
+            <div id="weightHistoryList" class="small-text"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/weight.js" asp-append-version="true"></script>
+}
+
