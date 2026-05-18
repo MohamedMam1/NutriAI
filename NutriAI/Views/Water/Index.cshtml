@@ -34,12 +34,16 @@
             </div>
             <form id="customWaterForm" class="row g-2">
                 <div class="col-8">
-                    <input type="number" class="form-control form-control-nutri" id="customWaterMl" placeholder="Custom amount (ml)" min="50" />
+                    <input type="number" class="form-control form-control-nutri" id="customWaterMl" placeholder="Custom amount (ml)" min="50" max="5000" />
                 </div>
                 <div class="col-4">
                     <button type="submit" class="btn btn-outline-nutri w-100">Add</button>
                 </div>
             </form>
+        </div>
+        <div class="card-nutri mt-4 insight-card">
+            <h3 class="h6 mb-2"><i class="fas fa-robot text-success me-2"></i>AI Hydration Tip</h3>
+            <p class="small-text mb-0" id="waterRecommendation">Loading recommendation...</p>
         </div>
     </div>
 </div>

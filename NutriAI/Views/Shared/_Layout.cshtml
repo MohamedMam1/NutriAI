@@ -1,8 +1,11 @@
+@using NutriAI.Domain.Constants
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="@Antiforgery.GetAndStoreTokens(Context).RequestToken" />
     <title>@ViewData["Title"] - NutriAI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -73,10 +76,13 @@
                     </li>
                 </ul>
                 <div class="d-flex align-items-center gap-2">
+                    @if (User.IsInRole(Roles.Admin))
+                    {
                     <a class="nav-link small-text @(ViewData["ActiveNav"]?.ToString() == "Admin" ? "active" : "")"
                        asp-controller="Admin" asp-action="Index">
                         <i class="fas fa-shield-halved me-1"></i> Admin
                     </a>
+                    }
                     <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
                         @Html.AntiForgeryToken()
                         <button type="submit" class="btn btn-logout">

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using NutriAI.Application.Interfaces.Services;
 using NutriAI.Extensions;
@@ -21,11 +22,17 @@ public class RecipeController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Analyze([FromBody] RecipeAnalyzeRequest request, CancellationToken cancellationToken) =>
-        Json(await _recipeService.AnalyzeRecipeAsync(User.GetUserId(), request.RecipeText, cancellationToken));
+    public async Task<IActionResult> Analyze([FromBody] RecipeAnalyzeRequest request, CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        return Json(await _recipeService.AnalyzeRecipeAsync(User.GetUserId(), request.RecipeText, cancellationToken));
+    }
 }
 
 public class RecipeAnalyzeRequest
 {
+    [Required, MinLength(10), MaxLength(8000)]
     public string RecipeText { get; set; } = string.Empty;
 }

@@ -1,8 +1,11 @@
 using System.Text.Json;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using NutriAI.Application.Interfaces.Repositories;
 using NutriAI.Application.Interfaces.Services;
 using NutriAI.Domain.Entities;
+using NutriAI.Infrastructure.AI;
 using NutriAI.Infrastructure.Data;
 
 namespace NutriAI.Infrastructure.Services;
@@ -12,21 +15,33 @@ public class ReportService : IReportService
     private readonly ApplicationDbContext _context;
     private readonly IWeeklyReportRepository _weeklyReportRepository;
     private readonly IUserGoalRepository _userGoalRepository;
+    private readonly IAiNutritionService _aiService;
+    private readonly IEmailService _emailService;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly ILogger<ReportService> _logger;
 
     public ReportService(
         ApplicationDbContext context,
         IWeeklyReportRepository weeklyReportRepository,
-        IUserGoalRepository userGoalRepository)
+        IUserGoalRepository userGoalRepository,
+        IAiNutritionService aiService,
+        IEmailService emailService,
+        UserManager<ApplicationUser> userManager,
+        ILogger<ReportService> logger)
     {
         _context = context;
         _weeklyReportRepository = weeklyReportRepository;
         _userGoalRepository = userGoalRepository;
+        _aiService = aiService;
+        _emailService = emailService;
+        _userManager = userManager;
+        _logger = logger;
     }
 
     public async Task<object> GetWeeklyDataAsync(string userId, CancellationToken cancellationToken = default)
     {
         var latest = await _weeklyReportRepository.GetLatestByUserAsync(userId, cancellationToken);
-        if (latest != null && latest.GeneratedAt > DateTime.UtcNow.AddDays(-1))
+        if (latest != null && latest.GeneratedAt > DateTime.UtcNow.AddDays(-6))
         {
             return MapReport(latest);
         }
@@ -38,6 +53,7 @@ public class ReportService : IReportService
         var hydrationDays = new List<int>();
         var goal = await _userGoalRepository.GetByUserIdAsync(userId, cancellationToken);
         var waterGoal = goal?.DailyWaterTargetMl ?? 2500;
+        var calorieTarget = goal?.DailyCalorieTarget ?? 2000;
 
         for (var i = 0; i < 7; i++)
         {
@@ -67,12 +83,19 @@ public class ReportService : IReportService
         var hydrationScore = hydrationDays.Count > 0 ? (int)hydrationDays.Average() : 0;
         var bestIdx = dailyCalories.IndexOf(dailyCalories.Max());
         var worstIdx = dailyCalories.IndexOf(dailyCalories.Min());
-        var recommendations = new[]
-        {
-            "Increase water intake on weekends to maintain hydration consistency.",
-            "Aim for steady protein intake across all days of the week.",
-            "Review your highest calorie day and balance it with lighter meals."
-        };
+
+        var reportSummary =
+            $"Weight change: {weightChange}kg. Avg calories: {avgCalories}/{calorieTarget}. Hydration score: {hydrationScore}%. Best day: {labels[Math.Max(0, bestIdx)]}. Worst day: {labels[Math.Max(0, worstIdx)]}.";
+
+        var recommendations = await _aiService.GetWeeklyRecommendationsAsync(reportSummary, cancellationToken);
+        var tips = recommendations is { Count: >= 3 }
+            ? recommendations.Take(3).ToArray()
+            : new[]
+            {
+                "Increase water intake on weekends to maintain hydration consistency.",
+                "Aim for steady protein intake across all days of the week.",
+                "Review your highest calorie day and balance it with lighter meals."
+            };
 
         var report = new WeeklyReport
         {
@@ -83,7 +106,7 @@ public class ReportService : IReportService
             HydrationScore = hydrationScore,
             BestDay = labels[Math.Max(0, bestIdx)],
             WorstDay = labels[Math.Max(0, worstIdx)],
-            RecommendationsJson = JsonSerializer.Serialize(recommendations),
+            RecommendationsJson = JsonSerializer.Serialize(tips),
             DailyCaloriesJson = JsonSerializer.Serialize(dailyCalories),
             WeightTrendJson = JsonSerializer.Serialize(weightTrend),
             HydrationDaysJson = JsonSerializer.Serialize(hydrationDays),
@@ -93,19 +116,52 @@ public class ReportService : IReportService
         await _weeklyReportRepository.AddAsync(report, cancellationToken);
         await _weeklyReportRepository.SaveChangesAsync(cancellationToken);
 
+        await TrySendWeeklyReportEmailAsync(userId, report, tips, cancellationToken);
+
         return new
         {
             weightChange,
             avgCalories,
+            calorieTarget,
             hydrationScore,
             bestDay = report.BestDay,
             worstDay = report.WorstDay,
-            aiRecommendations = recommendations,
+            aiRecommendations = tips,
             dailyCalories,
             dailyLabels = labels,
             weightTrend,
             hydrationDays
         };
+    }
+
+    private async Task TrySendWeeklyReportEmailAsync(
+        string userId,
+        WeeklyReport report,
+        IReadOnlyList<string> tips,
+        CancellationToken cancellationToken)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user?.Email == null) return;
+
+        var body = $"""
+            <h2>Your NutriAI Weekly Progress Report</h2>
+            <p>Weight change: <strong>{report.WeightChangeKg:+#.0;-#.0;0} kg</strong></p>
+            <p>Average daily calories: <strong>{report.AverageCalories}</strong></p>
+            <p>Hydration score: <strong>{report.HydrationScore}%</strong></p>
+            <p>Best day: {report.BestDay} | Needs attention: {report.WorstDay}</p>
+            <h3>AI Tips for next week</h3>
+            <ul>{string.Join("", tips.Select(t => $"<li>{System.Net.WebUtility.HtmlEncode(t)}</li>"))}</ul>
+            <p><em>AI-generated nutrition guidance is not medical advice.</em></p>
+            """;
+
+        try
+        {
+            await _emailService.SendEmailAsync(user.Email, "Your NutriAI Weekly Progress Report", body, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to send weekly report email to user {UserId}", userId);
+        }
     }
 
     private static object MapReport(WeeklyReport r) => new

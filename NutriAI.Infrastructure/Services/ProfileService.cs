@@ -4,6 +4,7 @@ using NutriAI.Application.DTOs;
 using NutriAI.Application.Interfaces.Repositories;
 using NutriAI.Application.Interfaces.Services;
 using NutriAI.Domain.Entities;
+using NutriAI.Infrastructure.AI;
 
 namespace NutriAI.Infrastructure.Services;
 
@@ -54,6 +55,9 @@ public class ProfileService : IProfileService
         goal.CurrentWeightKg = dto.CurrentWeight;
         goal.GoalWeightKg = dto.GoalWeight;
         goal.ActivityLevel = dto.ActivityLevel;
+        var (dailyCalories, dailyWater) = NutritionTargetsCalculator.Calculate(dto);
+        goal.DailyCalorieTarget = dailyCalories;
+        goal.DailyWaterTargetMl = dailyWater;
         goal.UpdatedAt = DateTime.UtcNow;
 
         await _userGoalRepository.UpdateAsync(goal, cancellationToken);
