@@ -1,0 +1,50 @@
+@{
+    ViewData["Title"] = "Water Tracker";
+    ViewData["ActiveNav"] = "Water";
+}
+
+<div class="page-header fade-in">
+    <h1>Water Tracker</h1>
+    <p class="subtitle">Stay hydrated throughout the day</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card-nutri text-center">
+            <h3 class="h6 mb-4">Daily Hydration</h3>
+            <div class="water-progress-circle">
+                <canvas id="waterCircle" width="180" height="180"></canvas>
+                <div class="water-progress-label">
+                    <p class="stat-value mb-0" id="waterPercent">0%</p>
+                    <p class="small-text text-muted mb-0"><span id="waterCurrent">0</span> / <span id="waterGoal">2500</span> ml</p>
+                </div>
+            </div>
+            <div class="progress progress-nutri mt-4">
+                <div class="progress-bar bg-info" id="waterBar" style="width:0%"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="card-nutri">
+            <h3 class="h6 mb-3">Quick Add</h3>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                <button class="btn btn-secondary-nutri water-add-btn" data-ml="250">+ 250ml</button>
+                <button class="btn btn-secondary-nutri water-add-btn" data-ml="500">+ 500ml</button>
+                <button class="btn btn-primary-nutri water-add-btn" data-ml="1000">+ 1L</button>
+            </div>
+            <form id="customWaterForm" class="row g-2">
+                <div class="col-8">
+                    <input type="number" class="form-control form-control-nutri" id="customWaterMl" placeholder="Custom amount (ml)" min="50" />
+                </div>
+                <div class="col-4">
+                    <button type="submit" class="btn btn-outline-nutri w-100">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/water.js" asp-append-version="true"></script>
+}
+

@@ -1,31 +1,458 @@
-html {
-  font-size: 14px;
+/* NutriAI Design System */
+:root {
+    --primary: #4CAF50;
+    --primary-dark: #43a047;
+    --secondary: #2196F3;
+    --accent: #FF9800;
+    --bg-light: #F8F9FA;
+    --bg-white: #FFFFFF;
+    --text-dark: #212529;
+    --text-muted: #6C757D;
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.06);
+    --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.1);
+    --radius-card: 16px;
+    --radius-btn: 10px;
+    --transition: 0.25s ease;
 }
 
-@media (min-width: 768px) {
-  html {
+* {
+    box-sizing: border-box;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
     font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    font-family: "Poppins", sans-serif;
+    color: var(--text-dark);
+    background-color: var(--bg-light);
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+h1 { font-size: 36px; font-weight: 700; }
+h2 { font-size: 30px; font-weight: 600; }
+h3 { font-size: 24px; font-weight: 600; }
+p, .body-text { font-size: 16px; font-weight: 400; }
+.small-text { font-size: 14px; }
+
+/* Navbar */
+.navbar-nutri {
+    background: var(--bg-white) !important;
+    box-shadow: var(--shadow-soft);
+    padding: 0.75rem 0;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.navbar-nutri .navbar-brand {
+    font-weight: 700;
+    font-size: 1.35rem;
+    color: var(--primary) !important;
+}
+
+.navbar-nutri .nav-link {
+    color: var(--text-dark) !important;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 0.5rem 0.75rem !important;
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+.navbar-nutri .nav-link:hover,
+.navbar-nutri .nav-link.active {
+    color: var(--primary) !important;
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.navbar-nutri .btn-logout {
+    border: 1px solid #dee2e6;
+    border-radius: var(--radius-btn);
+    font-size: 14px;
+    padding: 0.4rem 1rem;
+    transition: var(--transition);
+}
+
+.navbar-nutri .btn-logout:hover {
+    background: #f8d7da;
+    border-color: #f5c2c7;
+    color: #842029;
+}
+
+/* Main content */
+.main-content {
+    flex: 1;
+    padding: 1.5rem 0 2rem;
+}
+
+.page-header {
+    margin-bottom: 1.75rem;
+    animation: fadeIn 0.4s ease;
+}
+
+.page-header h1 {
+    margin-bottom: 0.25rem;
+}
+
+.page-header .subtitle {
+    color: var(--text-muted);
+    font-size: 16px;
+    margin: 0;
+}
+
+/* Cards */
+.card-nutri {
+    background: var(--bg-white);
+    border: none;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-soft);
+    padding: 20px;
+    transition: var(--transition);
+    height: 100%;
+}
+
+.card-nutri:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+.card-nutri .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.card-nutri .stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+/* Buttons */
+.btn-primary-nutri {
+    background: var(--primary);
+    border: none;
+    color: #fff;
+    border-radius: var(--radius-btn);
+    padding: 0.6rem 1.25rem;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.btn-primary-nutri:hover {
+    background: var(--primary-dark);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.35);
+}
+
+.btn-secondary-nutri {
+    background: var(--secondary);
+    border: none;
+    color: #fff;
+    border-radius: var(--radius-btn);
+    padding: 0.6rem 1.25rem;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.btn-secondary-nutri:hover {
+    background: #1976D2;
+    color: #fff;
+}
+
+.btn-accent-nutri {
+    background: var(--accent);
+    border: none;
+    color: #fff;
+    border-radius: var(--radius-btn);
+    padding: 0.6rem 1.25rem;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.btn-accent-nutri:hover {
+    background: #F57C00;
+    color: #fff;
+}
+
+.btn-outline-nutri {
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    background: transparent;
+    border-radius: var(--radius-btn);
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.btn-outline-nutri:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
+/* Forms */
+.form-control-nutri {
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
+    padding: 0.75rem 1rem;
+    font-size: 16px;
+    transition: var(--transition);
+}
+
+.form-control-nutri:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.2);
+}
+
+/* Progress */
+.progress-nutri {
+    height: 10px;
+    border-radius: 10px;
+    background: #e9ecef;
+}
+
+.progress-nutri .progress-bar {
+    background: var(--primary);
+    border-radius: 10px;
+}
+
+/* Stat widgets */
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.stat-icon.green { background: rgba(76, 175, 80, 0.15); color: var(--primary); }
+.stat-icon.blue { background: rgba(33, 150, 243, 0.15); color: var(--secondary); }
+.stat-icon.orange { background: rgba(255, 152, 0, 0.15); color: var(--accent); }
+
+/* Auth */
+.auth-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e8f5e9 100%);
+    padding: 2rem 1rem;
+}
+
+.auth-card {
+    background: var(--bg-white);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-soft);
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 440px;
+    animation: fadeIn 0.5s ease;
+}
+
+.auth-card .brand {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.auth-card .brand h2 {
+    color: var(--primary);
+    font-weight: 700;
+    margin: 0;
+}
+
+.auth-card .brand p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin: 0.25rem 0 0;
+}
+
+.password-toggle {
+    cursor: pointer;
+    color: var(--text-muted);
+}
+
+/* Chat / meal tracker */
+.chat-container {
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 1rem 0;
+}
+
+.chat-message {
+    margin-bottom: 1rem;
+    animation: fadeIn 0.3s ease;
+}
+
+.chat-message.user .chat-bubble {
+    background: var(--primary);
+    color: #fff;
+    margin-left: auto;
+    border-radius: 16px 16px 4px 16px;
+}
+
+.chat-message.ai .chat-bubble {
+    background: var(--bg-white);
+    border: 1px solid #e9ecef;
+    border-radius: 16px 16px 16px 4px;
+}
+
+.chat-bubble {
+    max-width: 85%;
+    padding: 1rem 1.25rem;
+    box-shadow: var(--shadow-soft);
+}
+
+.macro-badge {
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-right: 0.35rem;
+    margin-top: 0.35rem;
+}
+
+.macro-badge.calories { background: rgba(76, 175, 80, 0.15); color: var(--primary); }
+.macro-badge.protein { background: rgba(33, 150, 243, 0.15); color: var(--secondary); }
+.macro-badge.carbs { background: rgba(255, 152, 0, 0.15); color: var(--accent); }
+.macro-badge.fat { background: rgba(156, 39, 176, 0.15); color: #9C27B0; }
+
+/* Water circle */
+.water-progress-circle {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto;
+}
+
+.water-progress-circle canvas {
+    display: block;
+}
+
+.water-progress-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+/* Meal cards planner */
+.meal-plan-card {
+    border-left: 4px solid var(--primary);
+}
+
+.meal-plan-card.lunch { border-left-color: var(--secondary); }
+.meal-plan-card.dinner { border-left-color: var(--accent); }
+.meal-plan-card.snacks { border-left-color: #9C27B0; }
+
+/* Loading spinner */
+.ai-loading {
+    display: none;
+    text-align: center;
+    padding: 2rem;
+}
+
+.ai-loading.active {
+    display: block;
+}
+
+.spinner-nutri {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #e9ecef;
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+/* Footer */
+.footer-nutri {
+    background: var(--bg-white);
+    border-top: 1px solid #e9ecef;
+    padding: 1.5rem 0;
+    margin-top: auto;
+}
+
+.footer-nutri a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 14px;
+    transition: var(--transition);
+}
+
+.footer-nutri a:hover {
+    color: var(--primary);
+}
+
+/* Tables */
+.table-nutri {
+    background: var(--bg-white);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+}
+
+.table-nutri thead {
+    background: var(--bg-light);
+}
+
+/* Admin */
+.admin-stat-card .stat-value {
+    font-size: 2rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.fade-in {
+    animation: fadeIn 0.4s ease;
+}
+
+.hover-scale {
+    transition: var(--transition);
+}
+
+.hover-scale:hover {
+    transform: scale(1.02);
+}
+
+/* Section backgrounds */
+.section-alt {
+    background: var(--bg-white);
+    border-radius: var(--radius-card);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-soft);
+}
+
+/* Insight card */
+.insight-card {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.08) 0%, rgba(33, 150, 243, 0.08) 100%);
+    border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    h1 { font-size: 28px; }
+    h2 { font-size: 24px; }
+    .auth-card { padding: 1.75rem; }
+    .navbar-nutri .nav-link { font-size: 13px; }
+}
+
+@media (max-width: 576px) {
+    .card-nutri { padding: 16px; }
 }

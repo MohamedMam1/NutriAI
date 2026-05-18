@@ -1,0 +1,124 @@
+using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using NutriAI.Application.Interfaces.Repositories;
+using NutriAI.Application.Interfaces.Services;
+using NutriAI.Domain.Entities;
+using NutriAI.Infrastructure.Data;
+
+namespace NutriAI.Infrastructure.Services;
+
+public class ReportService : IReportService
+{
+    private readonly ApplicationDbContext _context;
+    private readonly IWeeklyReportRepository _weeklyReportRepository;
+    private readonly IUserGoalRepository _userGoalRepository;
+
+    public ReportService(
+        ApplicationDbContext context,
+        IWeeklyReportRepository weeklyReportRepository,
+        IUserGoalRepository userGoalRepository)
+    {
+        _context = context;
+        _weeklyReportRepository = weeklyReportRepository;
+        _userGoalRepository = userGoalRepository;
+    }
+
+    public async Task<object> GetWeeklyDataAsync(string userId, CancellationToken cancellationToken = default)
+    {
+        var latest = await _weeklyReportRepository.GetLatestByUserAsync(userId, cancellationToken);
+        if (latest != null && latest.GeneratedAt > DateTime.UtcNow.AddDays(-1))
+        {
+            return MapReport(latest);
+        }
+
+        var weekStart = DateTime.UtcNow.Date.AddDays(-6);
+        var labels = Enumerable.Range(0, 7).Select(i => weekStart.AddDays(i).ToString("ddd")).ToArray();
+        var dailyCalories = new List<int>();
+        var weightTrend = new List<double>();
+        var hydrationDays = new List<int>();
+        var goal = await _userGoalRepository.GetByUserIdAsync(userId, cancellationToken);
+        var waterGoal = goal?.DailyWaterTargetMl ?? 2500;
+
+        for (var i = 0; i < 7; i++)
+        {
+            var day = weekStart.AddDays(i);
+            var next = day.AddDays(1);
+            var cals = await _context.MealLogs
+                .Where(m => m.UserId == userId && m.LoggedAt >= day && m.LoggedAt < next)
+                .SumAsync(m => m.Calories, cancellationToken);
+            dailyCalories.Add(cals);
+
+            var weight = await _context.WeightLogs
+                .Where(w => w.UserId == userId && w.LoggedAt >= day && w.LoggedAt < next)
+                .OrderByDescending(w => w.LoggedAt)
+                .Select(w => w.WeightKg)
+                .FirstOrDefaultAsync(cancellationToken);
+            var lastWeight = weightTrend.Count > 0 ? weightTrend[^1] : goal?.CurrentWeightKg ?? 0;
+            weightTrend.Add(weight > 0 ? weight : lastWeight);
+
+            var water = await _context.WaterLogs
+                .Where(w => w.UserId == userId && w.LoggedAt >= day && w.LoggedAt < next)
+                .SumAsync(w => w.AmountMl, cancellationToken);
+            hydrationDays.Add(Math.Min(100, (int)(water * 100.0 / waterGoal)));
+        }
+
+        var weightChange = weightTrend.Count >= 2 ? Math.Round(weightTrend[^1] - weightTrend[0], 1) : 0;
+        var avgCalories = dailyCalories.Count > 0 ? (int)dailyCalories.Average() : 0;
+        var hydrationScore = hydrationDays.Count > 0 ? (int)hydrationDays.Average() : 0;
+        var bestIdx = dailyCalories.IndexOf(dailyCalories.Max());
+        var worstIdx = dailyCalories.IndexOf(dailyCalories.Min());
+        var recommendations = new[]
+        {
+            "Increase water intake on weekends to maintain hydration consistency.",
+            "Aim for steady protein intake across all days of the week.",
+            "Review your highest calorie day and balance it with lighter meals."
+        };
+
+        var report = new WeeklyReport
+        {
+            UserId = userId,
+            WeekStart = weekStart,
+            WeightChangeKg = weightChange,
+            AverageCalories = avgCalories,
+            HydrationScore = hydrationScore,
+            BestDay = labels[Math.Max(0, bestIdx)],
+            WorstDay = labels[Math.Max(0, worstIdx)],
+            RecommendationsJson = JsonSerializer.Serialize(recommendations),
+            DailyCaloriesJson = JsonSerializer.Serialize(dailyCalories),
+            WeightTrendJson = JsonSerializer.Serialize(weightTrend),
+            HydrationDaysJson = JsonSerializer.Serialize(hydrationDays),
+            GeneratedAt = DateTime.UtcNow
+        };
+
+        await _weeklyReportRepository.AddAsync(report, cancellationToken);
+        await _weeklyReportRepository.SaveChangesAsync(cancellationToken);
+
+        return new
+        {
+            weightChange,
+            avgCalories,
+            hydrationScore,
+            bestDay = report.BestDay,
+            worstDay = report.WorstDay,
+            aiRecommendations = recommendations,
+            dailyCalories,
+            dailyLabels = labels,
+            weightTrend,
+            hydrationDays
+        };
+    }
+
+    private static object MapReport(WeeklyReport r) => new
+    {
+        weightChange = r.WeightChangeKg,
+        avgCalories = r.AverageCalories,
+        hydrationScore = r.HydrationScore,
+        bestDay = r.BestDay,
+        worstDay = r.WorstDay,
+        aiRecommendations = JsonSerializer.Deserialize<string[]>(r.RecommendationsJson),
+        dailyCalories = JsonSerializer.Deserialize<int[]>(r.DailyCaloriesJson),
+        dailyLabels = new[] { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" },
+        weightTrend = JsonSerializer.Deserialize<double[]>(r.WeightTrendJson),
+        hydrationDays = JsonSerializer.Deserialize<int[]>(r.HydrationDaysJson)
+    };
+}
