@@ -12,17 +12,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function renderStats(data) {
-    document.getElementById('caloriesConsumed').textContent = data.caloriesConsumed;
-    document.getElementById('caloriesGoal').textContent = data.caloriesGoal;
-    const caloriePct = Math.min(100, (data.caloriesConsumed / data.caloriesGoal) * 100);
+    document.getElementById('caloriesConsumed').textContent = data.caloriesConsumed ?? 0;
+    document.getElementById('caloriesGoal').textContent = data.caloriesGoal ?? 0;
+    const calorieGoal = data.caloriesGoal || 1;
+    const caloriePct = Math.min(100, (data.caloriesConsumed / calorieGoal) * 100);
     document.getElementById('calorieProgress').style.width = caloriePct + '%';
 
-    document.getElementById('currentWeight').textContent = data.currentWeight;
-    document.getElementById('goalWeight').textContent = data.goalWeight;
-    document.getElementById('waterMl').textContent = data.waterMl;
-    document.getElementById('waterProgress').style.width = (data.waterMl / data.waterGoalMl * 100) + '%';
-    document.getElementById('weeklyStreak').textContent = data.weeklyStreak;
-    document.getElementById('aiInsight').textContent = data.aiInsight;
+    document.getElementById('currentWeight').textContent = data.currentWeight ?? 0;
+    document.getElementById('goalWeight').textContent = data.goalWeight ?? 0;
+    document.getElementById('waterMl').textContent = data.waterMl ?? 0;
+    const waterGoal = data.waterGoalMl || 1;
+    document.getElementById('waterProgress').style.width = Math.min(100, (data.waterMl / waterGoal) * 100) + '%';
+    document.getElementById('weeklyStreak').textContent = data.weeklyStreak ?? 0;
+    document.getElementById('aiInsight').textContent = data.aiInsight ?? '';
 
     if (data.latestReportBestDay && data.latestReportWorstDay) {
         const row = document.getElementById('weeklyReportRow');
@@ -36,54 +38,85 @@ function renderStats(data) {
 
 function renderLists(data) {
     const mealsEl = document.getElementById('recentMealsList');
-    mealsEl.innerHTML = data.recentMeals.map(m => `
-        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-            <div><strong>${m.name}</strong><br><span class="small-text text-muted">${m.time}</span></div>
-            <span class="badge bg-success">${m.calories} cal</span>
-        </div>`).join('');
-
     const plansEl = document.getElementById('savedPlansList');
-    plansEl.innerHTML = data.savedPlans.map(p => `
-        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-            <strong>${p.name}</strong>
-            <span class="small-text text-muted">${p.days} days</span>
-        </div>`).join('');
+
+    if (!data.recentMeals?.length) {
+        mealsEl.innerHTML = '<p class="small-text text-muted mb-0">No meals logged today yet.</p>';
+    } else {
+        mealsEl.innerHTML = data.recentMeals.map(m => `
+            <div class="dashboard-list-item">
+                <div><strong>${escapeHtml(m.name)}</strong><br><span class="small-text text-muted">${escapeHtml(m.time)}</span></div>
+                <span class="badge bg-success">${m.calories} cal</span>
+            </div>`).join('');
+    }
+
+    if (!data.savedPlans?.length) {
+        plansEl.innerHTML = '<p class="small-text text-muted mb-0">No saved meal plans yet.</p>';
+    } else {
+        plansEl.innerHTML = data.savedPlans.map(p => `
+            <div class="dashboard-list-item">
+                <strong>${escapeHtml(p.name)}</strong>
+                <span class="small-text text-muted">${p.days} days</span>
+            </div>`).join('');
+    }
 }
 
 function initCharts(data) {
     const calorieCtx = document.getElementById('calorieChart');
-    if (calorieCtx) {
+    const calorieLabels = data.weeklyCalories?.map(p => p.label) ?? [];
+    const calorieValues = data.weeklyCalories?.map(p => p.calories) ?? [];
+
+    if (calorieCtx && calorieLabels.length) {
         calorieChart = new Chart(calorieCtx, {
             type: 'bar',
             data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                labels: calorieLabels,
                 datasets: [{
                     label: 'Calories',
-                    data: [1920, 1780, 2010, data.caloriesConsumed, 1900, 2100, 1750],
+                    data: calorieValues,
                     backgroundColor: 'rgba(76, 175, 80, 0.7)',
                     borderRadius: 8
                 }]
             },
-            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
         });
     }
 
     const weightCtx = document.getElementById('weightMiniChart');
-    if (weightCtx) {
+    const weightLabels = data.weightTrend?.map(p => p.label) ?? [];
+    const weightValues = data.weightTrend?.map(p => p.weight ?? null) ?? [];
+
+    if (weightCtx && weightLabels.length) {
         weightMiniChart = new Chart(weightCtx, {
             type: 'line',
             data: {
-                labels: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'Now'],
+                labels: weightLabels,
                 datasets: [{
                     label: 'Weight (kg)',
-                    data: [79.2, 79.0, 78.8, 78.7, 78.6, 78.5, data.currentWeight],
+                    data: weightValues,
                     borderColor: '#2196F3',
                     backgroundColor: 'rgba(33, 150, 243, 0.1)',
                     fill: true,
-                    tension: 0.4
+                    tension: 0.4,
+                    spanGaps: true
                 }]
             },
-            options: { responsive: true, plugins: { legend: { display: false } } }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } }
+            }
         });
     }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('label');
+    div.textContent = text ?? '';
+    return div.innerHTML;
 }

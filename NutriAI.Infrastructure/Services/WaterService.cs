@@ -27,7 +27,7 @@ public class WaterService : IWaterService
     public async Task<object> GetStatusAsync(string userId, CancellationToken cancellationToken = default)
     {
         var goal = await _userGoalRepository.GetByUserIdAsync(userId, cancellationToken);
-        var goalMl = goal?.DailyWaterTargetMl ?? 2500;
+        var goalMl = goal?.DailyWaterTargetMl ?? 0;
         var currentMl = await _waterLogRepository.GetTotalForDateAsync(userId, DateTime.UtcNow, cancellationToken);
         var percent = goalMl > 0 ? Math.Min(100, (int)(currentMl * 100.0 / goalMl)) : 0;
 

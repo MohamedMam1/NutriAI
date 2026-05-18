@@ -1,13 +1,13 @@
 @{ Layout = "_AuthLayout"; ViewData["Title"] = "Resend Confirmation"; }
 <div class="auth-wrapper">
-        <div class="auth-card">
+    <div class="auth-card">
         <h2 class="h4 text-success mb-3">Resend confirmation email</h2>
         @if (TempData["Success"] != null) { <div class="alert alert-info">@TempData["Success"]</div> }
         <form asp-action="ResendConfirmation" method="post">
             @Html.AntiForgeryToken()
             <div class="mb-3">
                 <label class="form-label">Email</label>
-                <input type="email" name="email" class="form-control form-control-nutri" required />
+                <input type="email" name="email" value="@ViewData["Email"]" class="form-control form-control-nutri" required />
             </div>
             <button type="submit" class="btn btn-primary-nutri w-100">Send</button>
         </form>

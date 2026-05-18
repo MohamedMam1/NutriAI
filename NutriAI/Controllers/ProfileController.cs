@@ -20,15 +20,22 @@ public class ProfileController : Controller
         ViewData["Title"] = "Profile";
         ViewData["ActiveNav"] = "Profile";
         var profile = await _profileService.GetProfileAsync(User.GetUserId(), cancellationToken);
-        var vm = profile == null ? new ProfileViewModel() : new ProfileViewModel
+        if (profile == null)
+            return View(new ProfileViewModel());
+
+        var hasGoal = profile.Height > 0 && profile.Age > 0;
+        var vm = new ProfileViewModel
         {
+            Email = profile.Email,
             Name = profile.Name,
             Age = profile.Age,
-            Gender = profile.Gender,
+            Gender = string.IsNullOrEmpty(profile.Gender) ? "Male" : profile.Gender,
             Height = profile.Height,
             CurrentWeight = profile.CurrentWeight,
             GoalWeight = profile.GoalWeight,
-            ActivityLevel = profile.ActivityLevel
+            ActivityLevel = string.IsNullOrEmpty(profile.ActivityLevel) ? "Moderately Active" : profile.ActivityLevel,
+            DailyWaterTargetMl = profile.DailyWaterTargetMl,
+            HasCompletedProfile = hasGoal
         };
         return View(vm);
     }
@@ -40,6 +47,10 @@ public class ProfileController : Controller
     [HttpPost]
     public async Task<IActionResult> Save([FromBody] ProfileDto dto, CancellationToken cancellationToken)
     {
+        var current = await _profileService.GetProfileAsync(User.GetUserId(), cancellationToken);
+        if (current != null && !string.IsNullOrEmpty(current.Email))
+            dto = dto with { Email = current.Email };
+
         var result = await _profileService.SaveProfileAsync(User.GetUserId(), dto, cancellationToken);
         return Json(new { success = result.Succeeded, message = result.Message, errors = result.Errors });
     }

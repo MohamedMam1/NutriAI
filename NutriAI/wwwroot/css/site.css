@@ -112,7 +112,12 @@ p, .body-text { font-size: 16px; font-weight: 400; }
     box-shadow: var(--shadow-soft);
     padding: 20px;
     transition: var(--transition);
-    height: 100%;
+}
+
+.card-nutri.dashboard-stat-card,
+.card-nutri.dashboard-chart-card,
+.card-nutri.dashboard-list-card {
+    height: auto;
 }
 
 .card-nutri:hover {
@@ -443,6 +448,55 @@ p, .body-text { font-size: 16px; font-weight: 400; }
 .insight-card {
     background: linear-gradient(135deg, rgba(76, 175, 80, 0.08) 0%, rgba(33, 150, 243, 0.08) 100%);
     border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+/* Dashboard layout */
+.dashboard-charts-row {
+    align-items: stretch;
+}
+
+.dashboard-chart-wrap {
+    position: relative;
+    height: 280px;
+    width: 100%;
+}
+
+.dashboard-chart-wrap-sm {
+    height: 200px;
+}
+
+.dashboard-lists-row {
+    margin-top: 0.5rem;
+    clear: both;
+}
+
+.dashboard-list-card {
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-list-body {
+    flex: 1;
+    overflow: auto;
+    max-height: 280px;
+}
+
+.dashboard-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.dashboard-list-item:last-child {
+    border-bottom: none;
+}
+
+.auth-card.register-card {
+    max-width: 640px;
 }
 
 /* Responsive */

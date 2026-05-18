@@ -1,0 +1,579 @@
+<!-- ── NAVBAR ── -->
+<nav class="navbar-nutriai">
+  <div class="container">
+    <div class="d-flex align-items-center justify-content-between w-100 h-100">
+      <a asp-controller="Home" asp-action="Index" class="nav-brand text-decoration-none">
+        <div class="nav-brand-icon">🌿</div>
+        NutriAI
+      </a>
+      <div class="d-none d-lg-flex align-items-center gap-1">
+        <a href="#features" class="nav-link-item">Features</a>
+        <a href="#diet-plans" class="nav-link-item">Diet Plans</a>
+        <a href="#how" class="nav-link-item">How it works</a>
+        <a href="#pricing" class="nav-link-item">Pricing</a>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <a class="btn-nav-ghost d-none d-md-block text-decoration-none" asp-controller="Auth" asp-action="Login">Sign in</a>
+        <a class="btn-nav-primary text-decoration-none" asp-controller="Auth" asp-action="Register">Start free <i class="bi bi-arrow-right ms-1"></i></a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero-section">
+  <div class="hero-leaf-bg"></div>
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div class="hero-badge reveal">
+          <div class="badge-pulse"></div>
+          AI-Powered Nutrition Intelligence
+        </div>
+        <h1 class="hero-title reveal">
+          Eat smarter.<br/>
+          Live <span class="gradient">healthier.</span><br/>
+          Feel amazing.
+        </h1>
+        <p class="hero-subtitle reveal">
+          Describe your meals in natural language. NutriAI instantly breaks down calories, macros, and gives you a personalized plan to reach your goal weight — powered by advanced AI nutrition science.
+        </p>
+        <div class="hero-actions reveal">
+          <a asp-controller="Auth" asp-action="Register" class="btn-hero">
+            Start your diet plan free
+            <i class="bi bi-arrow-right"></i>
+          </a>
+          <a href="#how" class="btn-hero-outline">
+            <i class="bi bi-play-circle"></i>
+            See how it works
+          </a>
+        </div>
+        <div class="hero-trust reveal">
+          <div class="trust-avatars">
+            <div class="trust-av av1">S</div>
+            <div class="trust-av av2">M</div>
+            <div class="trust-av av3">A</div>
+            <div class="trust-av av4">R</div>
+            <div class="trust-av av5">+</div>
+          </div>
+          <span class="trust-text"><span class="trust-stars">★★★★★</span> <span data-stat="totalUsers">—</span> registered users</span>
+          <div class="trust-sep d-none d-sm-block"></div>
+          <span class="trust-text d-none d-sm-block">No credit card needed</span>
+        </div>
+        <div class="food-tags reveal">
+          <span class="food-tag"><i class="bi bi-egg-fried"></i> Calorie tracker</span>
+          <span class="food-tag"><i class="bi bi-bar-chart"></i> Macro breakdown</span>
+          <span class="food-tag"><i class="bi bi-robot"></i> AI meal planner</span>
+          <span class="food-tag"><i class="bi bi-droplet"></i> Hydration tracker</span>
+          <span class="food-tag"><i class="bi bi-graph-up"></i> Weight trends</span>
+        </div>
+      </div>
+      <div class="col-lg-6 reveal">
+        <div class="hero-panel">
+          <div class="panel-topbar">
+            <div class="dots">
+              <div class="dot dot-r"></div>
+              <div class="dot dot-y"></div>
+              <div class="dot dot-g"></div>
+            </div>
+            <div class="panel-url">app.nutriai.com/dashboard</div>
+          </div>
+          <div class="panel-body">
+            <div class="panel-greeting">Good morning, <span>Alex</span> 🌿</div>
+            <div class="panel-date">Monday, May 18 · Day 24 of your journey</div>
+            <div class="stats-grid">
+              <div class="stat-box">
+                <div class="stat-lbl">Calories Today</div>
+                <div class="stat-num">1,420</div>
+                <div class="stat-hint">/ 1,800 target</div>
+                <span class="stat-pill pill-em">380 remaining</span>
+              </div>
+              <div class="stat-box">
+                <div class="stat-lbl">Current Weight</div>
+                <div class="stat-num">74.2<small style="font-size:14px">kg</small></div>
+                <div class="stat-hint">Goal: 70kg</div>
+                <span class="stat-pill pill-cy">↓ 3.8kg lost</span>
+              </div>
+              <div class="stat-box">
+                <div class="stat-lbl">Water Intake</div>
+                <div class="stat-num">1.8<small style="font-size:14px">L</small></div>
+                <div class="stat-hint">/ 2.5L daily goal</div>
+                <span class="stat-pill pill-cy">72% done</span>
+              </div>
+              <div class="stat-box">
+                <div class="stat-lbl">Streak 🔥</div>
+                <div class="stat-num">24</div>
+                <div class="stat-hint">Days logged</div>
+                <span class="stat-pill pill-am">Personal best!</span>
+              </div>
+            </div>
+            <div class="panel-cal-bar">
+              <div class="cal-bar-label">
+                <span><i class="bi bi-lightning-charge-fill" style="color:var(--em)"></i> Daily calorie progress</span>
+                <span style="font-weight:600;color:var(--em-dark)">1,420 / 1,800</span>
+              </div>
+              <div class="cal-bar-track"><div class="cal-bar-fill"></div></div>
+            </div>
+            <div class="macros-row">
+              <div class="macro-box">
+                <div class="macro-val">142g</div>
+                <div class="macro-lbl">Protein</div>
+                <div class="macro-bar mb-em" style="width:80%"></div>
+              </div>
+              <div class="macro-box">
+                <div class="macro-val">180g</div>
+                <div class="macro-lbl">Carbs</div>
+                <div class="macro-bar mb-cy" style="width:65%"></div>
+              </div>
+              <div class="macro-box">
+                <div class="macro-val">48g</div>
+                <div class="macro-lbl">Fat</div>
+                <div class="macro-bar mb-pu" style="width:55%"></div>
+              </div>
+            </div>
+            <div class="ai-preview">
+              <div class="ai-msg">
+                <div class="ai-av user">A</div>
+                <div class="ai-txt">Had a grilled chicken wrap with avocado for lunch</div>
+              </div>
+              <div class="ai-msg">
+                <div class="ai-av bot">AI</div>
+                <div class="ai-txt">Great choice! That's <strong>~520 cal</strong> — 38g protein, 22g fat, 45g carbs. You're on track. For dinner, try grilled salmon with greens to stay within your target. ✅</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── LOGO STRIP ── -->
+<div class="logo-strip">
+  <p class="logo-strip-label">Trusted by health-conscious professionals at</p>
+  <div class="d-flex justify-content-center align-items-center gap-5 flex-wrap px-4">
+    <span class="logo-item">NutritionFirst</span>
+    <span class="logo-item">WellnessHub</span>
+    <span class="logo-item">FitTrack Pro</span>
+    <span class="logo-item">HealthOS</span>
+    <span class="logo-item">MindBody Inc</span>
+    <span class="logo-item">VitaCore</span>
+  </div>
+</div>
+
+<!-- ── FEATURES ── -->
+<section id="features" class="section-pad">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="eyebrow reveal">Platform features</span>
+      <h2 class="section-title reveal">Everything your diet<br/>journey needs</h2>
+      <p class="section-sub mx-auto reveal">Professional-grade nutrition intelligence wrapped in a beautifully simple experience — for anyone serious about their health.</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3 reveal">
+        <div class="feat-card">
+          <div class="feat-icon fi-em"><i class="bi bi-robot"></i></div>
+          <div class="feat-title">AI Meal Analysis</div>
+          <div class="feat-desc">Describe what you ate in plain English. NutriAI instantly calculates calories, protein, carbs, and fat — no food database searching needed.</div>
+          <span class="feat-tag">Natural language</span>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 reveal reveal-d1">
+        <div class="feat-card">
+          <div class="feat-icon fi-cy"><i class="bi bi-graph-down-arrow"></i></div>
+          <div class="feat-title">Weight Tracker</div>
+          <div class="feat-desc">Log daily weight and watch AI correlate your food habits with your trend. Get AI predictions on exactly when you'll hit your goal.</div>
+          <span class="feat-tag">Predictive insights</span>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 reveal reveal-d2">
+        <div class="feat-card">
+          <div class="feat-icon fi-pu"><i class="bi bi-calendar3"></i></div>
+          <div class="feat-title">AI Meal Planner</div>
+          <div class="feat-desc">Set your goal weight and timeline. Receive a full weekly plan with breakfast, lunch, dinner, and snacks — each with calories and prep instructions.</div>
+          <span class="feat-tag">Personalized plans</span>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 reveal reveal-d3">
+        <div class="feat-card">
+          <div class="feat-icon fi-am"><i class="bi bi-journal-check"></i></div>
+          <div class="feat-title">Weekly AI Reports</div>
+          <div class="feat-desc">Every Monday, get a personalized progress summary: weight change, calorie averages, hydration score, and AI tips for the week ahead.</div>
+          <span class="feat-tag">Automated insights</span>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="feat-card">
+          <div class="feat-icon fi-em"><i class="bi bi-droplet-half"></i></div>
+          <div class="feat-title">Hydration Tracker</div>
+          <div class="feat-desc">Track daily water intake visually. AI adjusts your hydration goals based on calorie burn, activity level, and target weight progress.</div>
+          <span class="feat-tag">Smart hydration</span>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal reveal-d1">
+        <div class="feat-card">
+          <div class="feat-icon fi-cy"><i class="bi bi-clipboard2-data"></i></div>
+          <div class="feat-title">Recipe Analyzer</div>
+          <div class="feat-desc">Paste any recipe and get a full nutrition breakdown per ingredient and per serving. AI also suggests lighter ingredient swaps to cut calories.</div>
+          <span class="feat-tag">Per-ingredient detail</span>
+        </div>
+      </div>
+      <div class="col-md-12 col-lg-4 reveal reveal-d2">
+        <div class="feat-card">
+          <div class="feat-icon fi-pu"><i class="bi bi-chat-dots"></i></div>
+          <div class="feat-title">AI Food Impact Chat</div>
+          <div class="feat-desc">Ask the AI anything. "Will this meal break my calorie budget?" or "What's a good low-carb dinner tonight?" — get instant, personalized answers.</div>
+          <span class="feat-tag">Conversational AI</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── DIET PLANS ── -->
+<section id="diet-plans" style="background:var(--surface); padding:96px 0;">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="eyebrow reveal">Diet programs</span>
+      <h2 class="section-title reveal">AI-generated plans for<br/>every goal</h2>
+      <p class="section-sub mx-auto reveal">Whether you want to lose weight, build muscle, or simply eat cleaner — NutriAI builds a plan around your exact lifestyle.</p>
+    </div>
+    <div class="row g-4 align-items-stretch">
+      <div class="col-md-6 col-lg-3 reveal">
+        <div class="diet-plan-card">
+          <span class="plan-emoji">🥗</span>
+          <div class="plan-name">Weight Loss</div>
+          <div class="plan-tagline">Calorie deficit with balanced macros — sustainable fat loss without feeling starved.</div>
+          <ul class="plan-meals">
+            <li><span>Oat bowl + berries</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Breakfast</small><small class="meal-cal">320 cal</small></span></li>
+            <li><span>Grilled chicken salad</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Lunch</small><small class="meal-cal">480 cal</small></span></li>
+            <li><span>Baked salmon + greens</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Dinner</small><small class="meal-cal">520 cal</small></span></li>
+            <li><span>Greek yogurt + almonds</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Snack</small><small class="meal-cal">180 cal</small></span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 reveal reveal-d1">
+        <div class="diet-plan-card featured">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="plan-emoji" style="margin-bottom:0">💪</span>
+            <span class="stat-pill pill-em" style="font-size:11px">Most popular</span>
+          </div>
+          <div class="plan-name">Lean Muscle</div>
+          <div class="plan-tagline">High protein, moderate carbs — build lean mass while keeping body fat low.</div>
+          <ul class="plan-meals">
+            <li><span>Eggs + whole grain toast</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Breakfast</small><small class="meal-cal">420 cal</small></span></li>
+            <li><span>Turkey rice bowl</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Lunch</small><small class="meal-cal">580 cal</small></span></li>
+            <li><span>Chicken + sweet potato</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Dinner</small><small class="meal-cal">620 cal</small></span></li>
+            <li><span>Protein shake + banana</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Post-gym</small><small class="meal-cal">280 cal</small></span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 reveal reveal-d2">
+        <div class="diet-plan-card">
+          <span class="plan-emoji">🥦</span>
+          <div class="plan-name">Clean Eating</div>
+          <div class="plan-tagline">Whole foods, minimal processing — feel energized and reduce inflammation daily.</div>
+          <ul class="plan-meals">
+            <li><span>Smoothie bowl</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Breakfast</small><small class="meal-cal">360 cal</small></span></li>
+            <li><span>Quinoa veggie bowl</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Lunch</small><small class="meal-cal">460 cal</small></span></li>
+            <li><span>Stir-fry with tofu</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Dinner</small><small class="meal-cal">480 cal</small></span></li>
+            <li><span>Mixed nuts + apple</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Snack</small><small class="meal-cal">220 cal</small></span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 reveal reveal-d3">
+        <div class="diet-plan-card">
+          <span class="plan-emoji">⚡</span>
+          <div class="plan-name">Low Carb</div>
+          <div class="plan-tagline">Reduced carbohydrates with healthy fats and protein to accelerate fat burning.</div>
+          <ul class="plan-meals">
+            <li><span>Avocado eggs</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Breakfast</small><small class="meal-cal">380 cal</small></span></li>
+            <li><span>Tuna lettuce wraps</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Lunch</small><small class="meal-cal">320 cal</small></span></li>
+            <li><span>Beef + zucchini noodles</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Dinner</small><small class="meal-cal">540 cal</small></span></li>
+            <li><span>Cheese + olives</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Snack</small><small class="meal-cal">160 cal</small></span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── METRICS (live from database) ── -->
+<div class="metrics-bg" id="landing-metrics">
+  <div class="container">
+    <div class="d-flex align-items-center justify-content-center flex-wrap gap-0" style="row-gap:40px">
+      <div class="metric-item reveal">
+        <div class="metric-num" data-stat="totalUsers">—</div>
+        <div class="metric-lbl">Registered users</div>
+      </div>
+      <div class="metric-sep d-none d-md-block" style="height:80px"></div>
+      <div class="metric-item reveal reveal-d1">
+        <div class="metric-num" data-stat="totalMealsAnalyzed">—</div>
+        <div class="metric-lbl">Meals analyzed by AI</div>
+      </div>
+      <div class="metric-sep d-none d-md-block" style="height:80px"></div>
+      <div class="metric-item reveal reveal-d2">
+        <div class="metric-num" data-stat="totalMealPlans">—</div>
+        <div class="metric-lbl">Meal plans generated</div>
+      </div>
+      <div class="metric-sep d-none d-md-block" style="height:80px"></div>
+      <div class="metric-item reveal reveal-d3">
+        <div class="metric-num" data-stat="totalRecipes">—</div>
+        <div class="metric-lbl">Recipes analyzed</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── HOW IT WORKS ── -->
+<section id="how" class="section-pad">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="eyebrow reveal">Simple setup</span>
+      <h2 class="section-title reveal">Up and running in<br/>under 3 minutes</h2>
+      <p class="section-sub mx-auto reveal">No complicated setup, no manual food databases, no calorie guessing. Just describe what you eat and let the AI do the rest.</p>
+    </div>
+    <div class="row g-4 position-relative">
+      <div class="col-6 col-lg-3 reveal">
+        <div class="step-item">
+          <div class="position-relative d-inline-block">
+            <div class="step-circle"><span>🧬</span></div>
+            <span class="step-num">1</span>
+          </div>
+          <div class="step-title">Set your profile</div>
+          <div class="step-desc">Enter your height, weight, age, activity level, and target weight. NutriAI calibrates your unique daily calorie and macro targets.</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3 reveal reveal-d1">
+        <div class="step-item">
+          <div class="position-relative d-inline-block">
+            <div class="step-circle"><span>🍽</span></div>
+            <span class="step-num">2</span>
+          </div>
+          <div class="step-title">Log meals naturally</div>
+          <div class="step-desc">Just say "I had a grilled chicken wrap for lunch." The AI extracts calories and macros instantly — no searching food databases.</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3 reveal reveal-d2">
+        <div class="step-item">
+          <div class="position-relative d-inline-block">
+            <div class="step-circle"><span>⚖️</span></div>
+            <span class="step-num">3</span>
+          </div>
+          <div class="step-title">Track your weight</div>
+          <div class="step-desc">Log your daily weigh-in. Watch your progress chart update and get AI predictions on your exact goal date based on current habits.</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3 reveal reveal-d3">
+        <div class="step-item">
+          <div class="position-relative d-inline-block">
+            <div class="step-circle"><span>📈</span></div>
+            <span class="step-num">4</span>
+          </div>
+          <div class="step-title">Receive weekly insights</div>
+          <div class="step-desc">Every Monday, get a full AI progress report with what worked, what to tweak, and a personalized action plan for the week ahead.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ── -->
+<section style="background:var(--surface); padding:96px 0;">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="eyebrow reveal">Real results</span>
+      <h2 class="section-title reveal">People who transformed<br/>with NutriAI</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-quote">"I've tried every calorie app out there. NutriAI is the first one that actually felt like talking to a real nutritionist. The AI gets context — it knows when I've had a heavy week and adjusts my plan automatically."</div>
+          <div class="testi-author">
+            <div class="testi-av" style="background:linear-gradient(135deg,#10B981,#059669)">S</div>
+            <div>
+              <div style="font-size:15px;font-weight:600;color:var(--text)">Sarah Mitchell</div>
+              <div style="font-size:12px;color:var(--text3)">Lost 12kg in 4 months</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal reveal-d1">
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-quote">"The weekly AI reports changed everything for me. Getting a proper summary every Monday — with specific actions, not just charts — is exactly what I needed to stay consistent and accountable."</div>
+          <div class="testi-author">
+            <div class="testi-av" style="background:linear-gradient(135deg,#06B6D4,#8B5CF6)">M</div>
+            <div>
+              <div style="font-size:15px;font-weight:600;color:var(--text)">Marcus Chen</div>
+              <div style="font-size:12px;color:var(--text3)">Maintaining goal weight 6 months</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 col-lg-4 reveal reveal-d2">
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-quote">"As a busy GP I have no time for complicated health apps. NutriAI's AI meal planner built a custom weekly plan in under 60 seconds. The recipe analyzer has completely changed how I shop and cook."</div>
+          <div class="testi-author">
+            <div class="testi-av" style="background:linear-gradient(135deg,#8B5CF6,#10B981)">A</div>
+            <div>
+              <div style="font-size:15px;font-weight:600;color:var(--text)">Dr. Amira Hassan</div>
+              <div style="font-size:12px;color:var(--text3)">GP & NutriAI Pro user</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRICING ── -->
+<section id="pricing" class="section-pad">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="eyebrow reveal">Pricing</span>
+      <h2 class="section-title reveal">Simple, transparent pricing</h2>
+      <p class="section-sub mx-auto reveal">Start completely free. Upgrade when you're ready. No hidden fees or long-term commitments.</p>
+    </div>
+    <div class="row g-4 justify-content-center align-items-start">
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="pricing-card">
+          <div class="pricing-plan-name">Starter</div>
+          <div class="pricing-price">$0<span>/mo</span></div>
+          <div class="pricing-period">Free forever — no card required</div>
+          <div class="pricing-hr"></div>
+          <ul class="pricing-features">
+            <li><i class="bi bi-check-circle-fill"></i> AI meal analysis (5 per day)</li>
+            <li><i class="bi bi-check-circle-fill"></i> Calorie & macro tracking</li>
+            <li><i class="bi bi-check-circle-fill"></i> Basic weight tracker</li>
+            <li><i class="bi bi-check-circle-fill"></i> Water intake logging</li>
+            <li><i class="bi bi-check-circle-fill"></i> 7-day meal history</li>
+          </ul>
+          <a class="btn-pricing-outline text-decoration-none d-block text-center" asp-controller="Auth" asp-action="Register">Get started free</a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal reveal-d1" style="margin-top:-12px">
+        <div class="pricing-card featured-plan">
+          <div class="pricing-badge">✦ Most popular</div>
+          <div class="pricing-plan-name">Pro</div>
+          <div class="pricing-price">$12<span>/mo</span></div>
+          <div class="pricing-period">Billed monthly · Cancel anytime</div>
+          <div class="pricing-hr"></div>
+          <ul class="pricing-features">
+            <li><i class="bi bi-check-circle-fill"></i> Unlimited AI meal analysis</li>
+            <li><i class="bi bi-check-circle-fill"></i> AI Meal Planner (weekly plans)</li>
+            <li><i class="bi bi-check-circle-fill"></i> Recipe Analyzer & substitutions</li>
+            <li><i class="bi bi-check-circle-fill"></i> Advanced weight insights</li>
+            <li><i class="bi bi-check-circle-fill"></i> Weekly AI progress reports</li>
+            <li><i class="bi bi-check-circle-fill"></i> AI Food Impact Chat</li>
+            <li><i class="bi bi-check-circle-fill"></i> Full history & data export</li>
+          </ul>
+          <a class="btn-pricing-solid text-decoration-none d-block text-center" asp-controller="Auth" asp-action="Register">Start 14-day free trial</a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal reveal-d2">
+        <div class="pricing-card">
+          <div class="pricing-plan-name">Enterprise</div>
+          <div class="pricing-price" style="font-size:40px">Custom</div>
+          <div class="pricing-period">Volume & team pricing available</div>
+          <div class="pricing-hr"></div>
+          <ul class="pricing-features">
+            <li><i class="bi bi-check-circle-fill"></i> Everything in Pro</li>
+            <li><i class="bi bi-check-circle-fill"></i> Team dashboards & analytics</li>
+            <li><i class="bi bi-check-circle-fill"></i> API access & integrations</li>
+            <li><i class="bi bi-check-circle-fill"></i> SSO & security controls</li>
+            <li><i class="bi bi-check-circle-fill"></i> Dedicated account manager</li>
+            <li><i class="bi bi-check-circle-fill"></i> SLA guarantee</li>
+          </ul>
+          <button class="btn-pricing-outline">Contact sales</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-card reveal">
+      <h2 class="cta-title">Start your diet transformation<br/>today — it's free</h2>
+      <p class="cta-sub">Join <span data-stat="totalUsers">—</span> people eating smarter with the power of AI nutrition science.</p>
+      <form id="cta-register-form" class="cta-form" asp-controller="Auth" asp-action="Register" method="get">
+        <input class="cta-input" type="email" name="email" placeholder="Enter your email address" required />
+        <button type="submit" class="btn-cta">Get started free <i class="bi bi-arrow-right ms-1"></i></button>
+      </form>
+      <p class="cta-disclaimer">Free plan available · No credit card required · Unsubscribe anytime</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-3 col-md-6">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div class="footer-brand-icon">🌿</div>
+          <span class="footer-brand-name">NutriAI</span>
+        </div>
+        <p>AI-powered nutrition intelligence for a healthier, smarter you. Professional-grade dietary guidance, accessible to everyone.</p>
+        <div class="d-flex gap-2 mt-3">
+          <a class="social-btn" href="#" title="Twitter"><i class="bi bi-twitter-x"></i></a>
+          <a class="social-btn" href="#" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+          <a class="social-btn" href="#" title="Instagram"><i class="bi bi-instagram"></i></a>
+          <a class="social-btn" href="#" title="YouTube"><i class="bi bi-youtube"></i></a>
+        </div>
+      </div>
+      <div class="col-6 col-lg-2 offset-lg-1">
+        <div class="footer-heading">Product</div>
+        <ul class="footer-links">
+          <li><a href="#">Features</a></li>
+          <li><a href="#">Diet Plans</a></li>
+          <li><a href="#">AI Coach</a></li>
+          <li><a href="#">Meal Planner</a></li>
+          <li><a href="#">Recipe Analyzer</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2">
+        <div class="footer-heading">Company</div>
+        <ul class="footer-links">
+          <li><a href="#">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2">
+        <div class="footer-heading">Resources</div>
+        <ul class="footer-links">
+          <li><a href="#">Nutrition guides</a></li>
+          <li><a href="#">Community</a></li>
+          <li><a href="#">Documentation</a></li>
+          <li><a href="#">API Reference</a></li>
+          <li><a href="#">Status</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2">
+        <div class="footer-heading">Legal</div>
+        <ul class="footer-links">
+          <li><a asp-controller="Home" asp-action="Privacy">Privacy policy</a></li>
+          <li><a href="#">Terms of service</a></li>
+          <li><a href="#">Cookie policy</a></li>
+          <li><a href="#">GDPR</a></li>
+          <li><a href="#">Security</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <span class="footer-copy">© 2026 NutriAI. All rights reserved. AI nutrition advice is not a substitute for professional medical consultation.</span>
+      <div class="d-flex gap-2">
+        <a class="social-btn" href="#" title="Twitter"><i class="bi bi-twitter-x"></i></a>
+        <a class="social-btn" href="#" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+      </div>
+    </div>
+  </div>
+</footer>

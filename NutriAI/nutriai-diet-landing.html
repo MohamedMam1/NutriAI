@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NutriAI — Smart Diet & Nutrition Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
+<style>
+:root {
+  --em: #10B981;
+  --em-dark: #059669;
+  --em-xlight: #ECFDF5;
+  --em-light: #D1FAE5;
+  --cy: #06B6D4;
+  --cy-light: #CFFAFE;
+  --pu: #8B5CF6;
+  --pu-light: #EDE9FE;
+  --bg: #F7FBF8;
+  --bg2: #FFFFFF;
+  --surface: #F0FAF5;
+  --border: #D1FAE5;
+  --border2: #A7F3D0;
+  --text: #0F2820;
+  --text2: #3D6B55;
+  --text3: #6B9E82;
+  --text-muted: #94A3B8;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --shadow-sm: 0 2px 12px rgba(16,185,129,0.08);
+  --shadow-md: 0 8px 32px rgba(16,185,129,0.12);
+  --shadow-lg: 0 20px 60px rgba(16,185,129,0.15);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ff-display { font-family: 'Clash Display', sans-serif; }
+
+/* ── NAVBAR ── */
+.navbar-nutriai {
+  background: rgba(247,251,248,0.9);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 0;
+  height: 68px;
+  transition: box-shadow 0.3s;
+  position: sticky; top: 0; z-index: 1000;
+}
+.navbar-nutriai.scrolled { box-shadow: var(--shadow-sm); }
+.nav-brand {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Clash Display', sans-serif;
+  font-weight: 700; font-size: 20px; color: var(--text);
+  text-decoration: none;
+}
+.nav-brand-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--em) 0%, #059669 100%);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 17px;
+  box-shadow: 0 4px 14px rgba(16,185,129,0.35);
+}
+.nav-link-item {
+  font-size: 15px; font-weight: 400; color: var(--text2) !important;
+  padding: 6px 14px !important; border-radius: 8px;
+  transition: color 0.2s, background 0.2s;
+  text-decoration: none;
+}
+.nav-link-item:hover { color: var(--em) !important; background: var(--em-xlight); }
+.btn-nav-ghost {
+  background: transparent; border: 1.5px solid var(--border2);
+  color: var(--text2); font-size: 14px; font-weight: 500;
+  padding: 8px 20px; border-radius: var(--radius-sm); cursor: pointer;
+  font-family: 'Inter', sans-serif; transition: all 0.2s;
+}
+.btn-nav-ghost:hover { border-color: var(--em); color: var(--em); background: var(--em-xlight); }
+.btn-nav-primary {
+  background: linear-gradient(135deg, var(--em) 0%, var(--em-dark) 100%);
+  border: none; color: #fff; font-size: 14px; font-weight: 600;
+  padding: 9px 22px; border-radius: var(--radius-sm); cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 4px 16px rgba(16,185,129,0.3);
+  transition: all 0.2s;
+}
+.btn-nav-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(16,185,129,0.4); }
+
+/* ── HERO ── */
+.hero-section {
+  padding: 96px 0 80px;
+  background:
+    radial-gradient(ellipse 900px 600px at 10% 20%, rgba(16,185,129,0.06) 0%, transparent 65%),
+    radial-gradient(ellipse 700px 500px at 90% 80%, rgba(6,182,212,0.05) 0%, transparent 60%),
+    var(--bg);
+  position: relative; overflow: hidden;
+}
+.hero-leaf-bg {
+  position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+  pointer-events: none; overflow: hidden;
+}
+.hero-leaf-bg::before {
+  content: '';
+  position: absolute; top: -120px; right: -120px;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(16,185,129,0.07) 0%, transparent 70%);
+}
+.hero-leaf-bg::after {
+  content: '';
+  position: absolute; bottom: -80px; left: -80px;
+  width: 400px; height: 400px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(6,182,212,0.05) 0%, transparent 70%);
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--em-xlight); border: 1.5px solid var(--border2);
+  border-radius: 100px; padding: 6px 18px 6px 12px;
+  font-size: 13px; color: var(--em-dark); font-weight: 600;
+  margin-bottom: 28px;
+}
+.badge-pulse {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--em);
+  animation: hpulse 2s ease infinite;
+}
+@keyframes hpulse {
+  0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,0.5);}
+  50%{box-shadow:0 0 0 5px rgba(16,185,129,0);}
+}
+.hero-title {
+  font-family: 'Clash Display', sans-serif;
+  font-size: clamp(40px, 6vw, 76px);
+  font-weight: 700; line-height: 1.05;
+  letter-spacing: -2px; color: var(--text);
+}
+.hero-title .gradient {
+  background: linear-gradient(135deg, var(--em) 0%, #059669 50%, var(--cy) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-subtitle {
+  font-size: 18px; color: var(--text2); font-weight: 300;
+  line-height: 1.7; max-width: 520px; margin-top: 20px;
+}
+.hero-actions { margin-top: 40px; display: flex; gap: 14px; flex-wrap: wrap; }
+.btn-hero {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: linear-gradient(135deg, var(--em) 0%, var(--em-dark) 100%);
+  border: none; color: #fff; font-family: 'Inter', sans-serif;
+  font-size: 16px; font-weight: 600; padding: 15px 34px;
+  border-radius: var(--radius); cursor: pointer;
+  box-shadow: 0 6px 28px rgba(16,185,129,0.35);
+  transition: all 0.25s; text-decoration: none;
+}
+.btn-hero:hover { transform: translateY(-2px); box-shadow: 0 10px 36px rgba(16,185,129,0.45); color: #fff; }
+.btn-hero-outline {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: var(--bg2); border: 1.5px solid var(--border2);
+  color: var(--text); font-family: 'Inter', sans-serif;
+  font-size: 16px; font-weight: 500; padding: 14px 28px;
+  border-radius: var(--radius); cursor: pointer;
+  box-shadow: var(--shadow-sm); transition: all 0.2s; text-decoration: none;
+}
+.btn-hero-outline:hover { border-color: var(--em); color: var(--em); transform: translateY(-1px); }
+.hero-trust {
+  margin-top: 48px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+}
+.trust-avatars { display: flex; }
+.trust-av {
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 2.5px solid var(--bg);
+  font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; margin-left: -9px;
+}
+.trust-av:first-child { margin-left: 0; }
+.av1{background:linear-gradient(135deg,#10B981,#059669);}
+.av2{background:linear-gradient(135deg,#06B6D4,#0891B2);}
+.av3{background:linear-gradient(135deg,#8B5CF6,#7C3AED);}
+.av4{background:linear-gradient(135deg,#F59E0B,#D97706);}
+.av5{background:linear-gradient(135deg,#10B981,#06B6D4);}
+.trust-text { font-size: 14px; color: var(--text2); }
+.trust-stars { color: #F59E0B; }
+.trust-sep { width: 1px; height: 22px; background: var(--border2); }
+
+/* ── HERO VISUAL PANEL ── */
+.hero-panel {
+  background: var(--bg2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.panel-topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 12px;
+}
+.dots { display: flex; gap: 6px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot-r{background:#FF5F57;} .dot-y{background:#FEBC2E;} .dot-g{background:#28C840;}
+.panel-url {
+  flex: 1; background: var(--bg);
+  border: 1px solid var(--border); border-radius: 6px;
+  padding: 4px 12px; font-size: 12px; color: var(--text3);
+  text-align: center; max-width: 260px; margin: 0 auto;
+}
+.panel-body { padding: 24px; }
+.panel-greeting {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 20px; font-weight: 700; color: var(--text);
+  margin-bottom: 4px;
+}
+.panel-greeting span { color: var(--em); }
+.panel-date { font-size: 13px; color: var(--text3); margin-bottom: 20px; }
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.stat-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 14px;
+  transition: border-color 0.2s;
+}
+.stat-box:hover { border-color: var(--em); }
+.stat-lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-num {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 24px; font-weight: 700; color: var(--text); margin: 3px 0 2px;
+}
+.stat-hint { font-size: 11px; color: var(--text3); }
+.stat-pill {
+  display: inline-block; font-size: 10px; padding: 2px 8px;
+  border-radius: 100px; margin-top: 4px; font-weight: 600;
+}
+.pill-em { background: var(--em-light); color: var(--em-dark); }
+.pill-cy { background: var(--cy-light); color: #0E7490; }
+.pill-pu { background: var(--pu-light); color: #6D28D9; }
+.pill-am { background: #FEF3C7; color: #92400E; }
+.panel-cal-bar {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 14px; margin-bottom: 16px;
+}
+.cal-bar-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text2); margin-bottom: 8px; }
+.cal-bar-track {
+  height: 8px; border-radius: 100px;
+  background: var(--em-light); overflow: hidden;
+}
+.cal-bar-fill {
+  height: 100%; border-radius: 100px;
+  background: linear-gradient(90deg, var(--em), var(--cy));
+  width: 78%;
+}
+.macros-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 16px; }
+.macro-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px; text-align: center;
+}
+.macro-val { font-family: 'Clash Display',sans-serif; font-size: 18px; font-weight: 700; color: var(--text); }
+.macro-lbl { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.macro-bar {
+  height: 4px; border-radius: 100px; margin-top: 6px;
+}
+.mb-em{background:var(--em);}
+.mb-cy{background:var(--cy);}
+.mb-pu{background:var(--pu);}
+.ai-preview {
+  background: linear-gradient(135deg, #F0FDF9 0%, #E0F2FE 100%);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 14px;
+}
+.ai-msg { display: flex; gap: 8px; margin-bottom: 8px; align-items: flex-start; }
+.ai-msg:last-child { margin-bottom: 0; }
+.ai-av {
+  width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
+  font-size: 11px; display: flex; align-items: center; justify-content: center;
+  font-weight: 600;
+}
+.ai-av.bot { background: linear-gradient(135deg, var(--em), var(--cy)); color: #fff; }
+.ai-av.user { background: var(--em-light); color: var(--em-dark); }
+.ai-txt { font-size: 12px; line-height: 1.5; color: var(--text2); }
+.ai-txt strong { color: var(--em-dark); }
+
+/* ── FOOD TAGS FLOAT ── */
+.food-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.food-tag {
+  background: var(--bg2); border: 1.5px solid var(--border);
+  border-radius: 100px; padding: 6px 14px;
+  font-size: 13px; color: var(--text2); font-weight: 500;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s;
+}
+.food-tag:hover { border-color: var(--em); color: var(--em); background: var(--em-xlight); }
+.food-tag i { font-size: 14px; margin-right: 4px; }
+
+/* ── SECTION COMMONS ── */
+.section-pad { padding: 96px 0; }
+.eyebrow {
+  display: inline-block;
+  font-size: 12px; font-weight: 600; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--em);
+  margin-bottom: 14px;
+}
+.section-title {
+  font-family: 'Clash Display', sans-serif;
+  font-size: clamp(30px, 4vw, 50px); font-weight: 700;
+  letter-spacing: -1.5px; line-height: 1.1; color: var(--text);
+}
+.section-sub {
+  font-size: 17px; color: var(--text2); font-weight: 300;
+  line-height: 1.75; max-width: 540px; margin: 16px 0 0;
+}
+.divider-green {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border2), transparent);
+}
+
+/* ── FEATURE CARDS ── */
+.feat-card {
+  background: var(--bg2); border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); padding: 32px;
+  height: 100%; transition: all 0.25s;
+  position: relative; overflow: hidden;
+}
+.feat-card:hover {
+  border-color: var(--em);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+.feat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--em), var(--cy));
+  opacity: 0; transition: opacity 0.3s;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+.feat-card:hover::before { opacity: 1; }
+.feat-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; margin-bottom: 20px;
+}
+.fi-em { background: var(--em-xlight); color: var(--em); }
+.fi-cy { background: var(--cy-light); color: var(--cy); }
+.fi-pu { background: var(--pu-light); color: var(--pu); }
+.fi-am { background: #FEF3C7; color: #D97706; }
+.feat-title {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 19px; font-weight: 700; color: var(--text);
+  margin-bottom: 10px;
+}
+.feat-desc { font-size: 14.5px; color: var(--text2); line-height: 1.65; font-weight: 300; }
+.feat-tag {
+  display: inline-block; margin-top: 16px;
+  background: var(--em-xlight); border: 1px solid var(--border2);
+  color: var(--em-dark); font-size: 12px; font-weight: 600;
+  padding: 4px 12px; border-radius: 100px;
+}
+
+/* ── DIET PLANS ── */
+.diet-plan-card {
+  background: var(--bg2); border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); padding: 28px;
+  transition: all 0.25s; height: 100%;
+}
+.diet-plan-card:hover { border-color: var(--em); box-shadow: var(--shadow-md); transform: translateY(-3px); }
+.diet-plan-card.featured {
+  background: linear-gradient(135deg, #ECFDF5 0%, #E0F2FE 100%);
+  border-color: var(--em);
+  box-shadow: var(--shadow-md);
+}
+.plan-emoji { font-size: 36px; margin-bottom: 14px; display: block; }
+.plan-name {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 6px;
+}
+.plan-tagline { font-size: 13.5px; color: var(--text2); margin-bottom: 18px; font-weight: 300; }
+.plan-meals { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.plan-meals li {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 13.5px; color: var(--text2); padding: 9px 12px;
+  background: rgba(16,185,129,0.05); border-radius: 8px;
+  border: 1px solid rgba(16,185,129,0.1);
+}
+.plan-meals .meal-time { font-weight: 600; color: var(--em-dark); font-size: 11px; }
+.plan-meals .meal-cal { font-weight: 600; color: var(--text); font-size: 12px; }
+
+/* ── STEPS ── */
+.step-wrap { position: relative; }
+.step-line {
+  position: absolute; top: 40px; left: calc(50% + 2px);
+  width: calc(100% - 4px); height: 2px;
+  background: linear-gradient(90deg, var(--em), var(--cy));
+  opacity: 0.2;
+}
+.step-item { text-align: center; padding: 0 16px; }
+.step-circle {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: var(--bg2); border: 2px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; margin: 0 auto 18px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s;
+}
+.step-item:hover .step-circle {
+  border-color: var(--em);
+  box-shadow: 0 0 0 6px rgba(16,185,129,0.1);
+}
+.step-num {
+  position: absolute; top: -6px; right: -6px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--em); color: #fff;
+  font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.step-title {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px;
+}
+.step-desc { font-size: 13.5px; color: var(--text2); line-height: 1.6; font-weight: 300; }
+
+/* ── METRICS ── */
+.metrics-bg {
+  background: linear-gradient(135deg, #ECFDF5 0%, #E0F2FE 60%, #EDE9FE 100%);
+  border-top: 1px solid var(--border2);
+  border-bottom: 1px solid var(--border2);
+  padding: 64px 0;
+}
+.metric-item { text-align: center; padding: 0 24px; }
+.metric-num {
+  font-family: 'Clash Display', sans-serif;
+  font-size: clamp(40px, 5vw, 60px);
+  font-weight: 700; letter-spacing: -2px;
+  background: linear-gradient(135deg, var(--em), var(--cy));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; line-height: 1;
+}
+.metric-lbl { font-size: 14px; color: var(--text2); margin-top: 8px; font-weight: 400; }
+.metric-sep { width: 1px; background: var(--border2); align-self: stretch; }
+
+/* ── TESTIMONIALS ── */
+.testi-card {
+  background: var(--bg2); border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); padding: 28px;
+  transition: all 0.25s; height: 100%;
+}
+.testi-card:hover { border-color: var(--em); box-shadow: var(--shadow-md); transform: translateY(-3px); }
+.testi-stars { font-size: 15px; margin-bottom: 14px; letter-spacing: 2px; color: #F59E0B; }
+.testi-quote {
+  font-size: 15px; color: var(--text2); line-height: 1.7;
+  font-weight: 300; font-style: italic; margin-bottom: 20px;
+}
+.testi-author { display: flex; align-items: center; gap: 12px; }
+.testi-av {
+  width: 42px; height: 42px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 16px; color: #fff;
+  flex-shrink: 0;
+}
+
+/* ── PRICING ── */
+.pricing-card {
+  background: var(--bg2); border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); padding: 36px;
+  transition: all 0.25s; height: 100%; position: relative;
+}
+.pricing-card:hover:not(.featured-plan) { border-color: var(--em); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.pricing-card.featured-plan {
+  background: linear-gradient(160deg, #ECFDF5 0%, #E0F2FE 100%);
+  border-color: var(--em); box-shadow: var(--shadow-lg);
+}
+.pricing-badge {
+  position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--em), var(--cy));
+  color: #fff; font-size: 11px; font-weight: 700;
+  padding: 5px 20px; border-radius: 100px; white-space: nowrap;
+  letter-spacing: 0.5px;
+}
+.pricing-plan-name {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 15px; font-weight: 600; color: var(--text2); margin-bottom: 18px;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+.pricing-price {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 52px; font-weight: 700; color: var(--text);
+  letter-spacing: -2px; line-height: 1;
+}
+.pricing-price span { font-size: 20px; color: var(--text2); letter-spacing: 0; }
+.pricing-period { font-size: 14px; color: var(--text-muted); margin: 6px 0 24px; }
+.pricing-hr { height: 1px; background: var(--border); margin: 20px 0; }
+.pricing-features { list-style: none; padding: 0; margin: 0 0 28px; }
+.pricing-features li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 14px; color: var(--text2); padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+.pricing-features li:last-child { border-bottom: none; }
+.pricing-features li i { color: var(--em); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.btn-pricing-outline {
+  width: 100%; padding: 13px;
+  border-radius: var(--radius-sm); font-size: 15px; font-weight: 600;
+  font-family: 'Inter', sans-serif; cursor: pointer;
+  background: transparent; border: 2px solid var(--border2);
+  color: var(--text); transition: all 0.2s;
+}
+.btn-pricing-outline:hover { border-color: var(--em); color: var(--em); background: var(--em-xlight); }
+.btn-pricing-solid {
+  width: 100%; padding: 13px;
+  border-radius: var(--radius-sm); font-size: 15px; font-weight: 600;
+  font-family: 'Inter', sans-serif; cursor: pointer;
+  background: linear-gradient(135deg, var(--em), var(--em-dark));
+  border: none; color: #fff;
+  box-shadow: 0 6px 24px rgba(16,185,129,0.3);
+  transition: all 0.2s;
+}
+.btn-pricing-solid:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(16,185,129,0.4); }
+
+/* ── CTA ── */
+.cta-section { padding: 100px 0; }
+.cta-card {
+  background: linear-gradient(135deg, #ECFDF5 0%, #CFFAFE 50%, #EDE9FE 100%);
+  border: 2px solid var(--border2);
+  border-radius: var(--radius-xl); padding: 80px 60px;
+  text-align: center; position: relative; overflow: hidden;
+}
+.cta-card::before {
+  content: '';
+  position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 300px;
+  background: radial-gradient(ellipse, rgba(16,185,129,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-title {
+  font-family: 'Clash Display', sans-serif;
+  font-size: clamp(30px, 4vw, 52px); font-weight: 700;
+  letter-spacing: -1.5px; color: var(--text);
+  line-height: 1.1; margin-bottom: 16px;
+}
+.cta-sub { font-size: 17px; color: var(--text2); font-weight: 300; margin-bottom: 40px; }
+.cta-form {
+  display: flex; gap: 10px; max-width: 440px; margin: 0 auto;
+  flex-wrap: wrap; justify-content: center;
+}
+.cta-input {
+  flex: 1; min-width: 200px;
+  background: var(--bg2); border: 1.5px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 14px 20px;
+  font-size: 15px; color: var(--text); font-family: 'Inter', sans-serif;
+  outline: none; transition: border-color 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+.cta-input::placeholder { color: var(--text3); }
+.cta-input:focus { border-color: var(--em); }
+.btn-cta {
+  background: linear-gradient(135deg, var(--em), var(--em-dark));
+  border: none; color: #fff; padding: 14px 28px;
+  border-radius: var(--radius-sm); font-size: 15px; font-weight: 600;
+  font-family: 'Inter', sans-serif; cursor: pointer;
+  box-shadow: 0 6px 24px rgba(16,185,129,0.3);
+  transition: all 0.2s; white-space: nowrap;
+}
+.btn-cta:hover { transform: translateY(-1px); box-shadow: 0 10px 30px rgba(16,185,129,0.4); }
+.cta-disclaimer { font-size: 13px; color: var(--text3); margin-top: 14px; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--text);
+  padding: 70px 0 36px;
+}
+.footer-brand-name {
+  font-family: 'Clash Display', sans-serif;
+  font-weight: 700; font-size: 22px; color: #fff;
+}
+.footer-brand-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--em), var(--cy));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+footer p { font-size: 14px; color: rgba(255,255,255,0.5); font-weight: 300; }
+.footer-heading { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.9); letter-spacing: 0.5px; margin-bottom: 16px; }
+.footer-links { list-style: none; padding: 0; margin: 0; }
+.footer-links li { margin-bottom: 10px; }
+.footer-links a {
+  font-size: 14px; color: rgba(255,255,255,0.5);
+  text-decoration: none; font-weight: 300; transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--em); }
+.footer-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 40px 0 28px; }
+.footer-copy { font-size: 13px; color: rgba(255,255,255,0.35); }
+.social-btn {
+  width: 36px; height: 36px; border-radius: 9px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.5); font-size: 15px;
+  transition: all 0.2s; text-decoration: none;
+}
+.social-btn:hover { border-color: var(--em); color: var(--em); background: rgba(16,185,129,0.1); }
+
+/* ── LOGO STRIP ── */
+.logo-strip { padding: 52px 0; background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.logo-strip-label { font-size: 13px; color: var(--text3); letter-spacing: 0.5px; margin-bottom: 28px; text-align: center; }
+.logo-item {
+  font-family: 'Clash Display', sans-serif; font-size: 17px; font-weight: 600;
+  color: var(--text-muted); opacity: 0.55; transition: opacity 0.2s; cursor: default;
+  letter-spacing: -0.3px;
+}
+.logo-item:hover { opacity: 0.9; color: var(--em); }
+
+/* ── REVEAL ANIMATION ── */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+.reveal.in { opacity: 1; transform: translateY(0); }
+.reveal-d1 { transition-delay: 0.1s; }
+.reveal-d2 { transition-delay: 0.2s; }
+.reveal-d3 { transition-delay: 0.3s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 991px) {
+  .hero-panel { margin-top: 48px; }
+  .step-line { display: none; }
+  .cta-card { padding: 52px 28px; }
+}
+@media (max-width: 767px) {
+  .hero-title { letter-spacing: -1px; }
+  .metric-item { margin-bottom: 32px; }
+  .metric-sep { display: none; }
+  .section-pad { padding: 64px 0; }
+}
+@media (max-width: 576px) {
+  .hero-actions { flex-direction: column; align-items: flex-start; }
+  .btn-hero, .btn-hero-outline { width: 100%; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav class="navbar-nutriai">
+  <div class="container">
+    <div class="d-flex align-items-center justify-content-between w-100 h-100">
+      <a href="#" class="nav-brand text-decoration-none">
+        <div class="nav-brand-icon">🌿</div>
+        NutriAI
+      </a>
+      <div class="d-none d-lg-flex align-items-center gap-1">
+        <a href="#features" class="nav-link-item">Features</a>
+        <a href="#diet-plans" class="nav-link-item">Diet Plans</a>
+        <a href="#how" class="nav-link-item">How it works</a>
+        <a href="#pricing" class="nav-link-item">Pricing</a>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn-nav-ghost d-none d-md-block">Sign in</button>
+        <button class="btn-nav-primary">Start free <i class="bi bi-arrow-right ms-1"></i></button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero-section">
+  <div class="hero-leaf-bg"></div>
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div class="hero-badge reveal">
+          <div class="badge-pulse"></div>
+          AI-Powered Nutrition Intelligence
+        </div>
+        <h1 class="hero-title reveal">
+          Eat smarter.<br/>
+          Live <span class="gradient">healthier.</span><br/>
+          Feel amazing.
+        </h1>
+        <p class="hero-subtitle reveal">
+          Describe your meals in natural language. NutriAI instantly breaks down calories, macros, and gives you a personalized plan to reach your goal weight — powered by advanced AI nutrition science.
+        </p>
+        <div class="hero-actions reveal">
+          <a href="#" class="btn-hero">
+            Start your diet plan free
+            <i class="bi bi-arrow-right"></i>
+          </a>
+          <a href="#how" class="btn-hero-outline">
+            <i class="bi bi-play-circle"></i>
+            See how it works
+          </a>
+        </div>
+        <div class="hero-trust reveal">
+          <div class="trust-avatars">
+            <div class="trust-av av1">S</div>
+            <div class="trust-av av2">M</div>
+            <div class="trust-av av3">A</div>
+            <div class="trust-av av4">R</div>
+            <div class="trust-av av5">+</div>
+          </div>
+          <span class="trust-text"><span class="trust-stars">★★★★★</span> 50,000+ active users</span>
+          <div class="trust-sep d-none d-sm-block"></div>
+          <span class="trust-text d-none d-sm-block">No credit card needed</span>
+        </div>
+        <div class="food-tags reveal">
+          <span class="food-tag"><i class="bi bi-egg-fried"></i> Calorie tracker</span>
+          <span class="food-tag"><i class="bi bi-bar-chart"></i> Macro breakdown</span>
+          <span class="food-tag"><i class="bi bi-robot"></i> AI meal planner</span>
+          <span class="food-tag"><i class="bi bi-droplet"></i> Hydration tracker</span>
+          <span class="food-tag"><i class="bi bi-graph-up"></i> Weight trends</span>
+        </div>
+      </div>
+      <div class="col-lg-6 reveal">
+        <div class="hero-panel">
+          <div class="panel-topbar">
+            <div class="dots">
+              <div class="dot dot-r"></div>
+              <div class="dot dot-y"></div>
+              <div class="dot dot-g"></div>
+            </div>
+            <div class="panel-url">app.nutriai.com/dashboard</div>
+          </div>
+          <div class="panel-body">
+            <div class="panel-greeting">Good morning, <span>Alex</span> 🌿</div>
+            <div class="panel-date">Monday, May 18 · Day 24 of your journey</div>
+            <div class="stats-grid">
+              <div class="stat-box">
+                <div class="stat-lbl">Calories Today</div>
+                <div class="stat-num">1,420</div>
+                <div class="stat-hint">/ 1,800 target</div>
+                <span class="stat-pill pill-em">380 remaining</span>
+              </div>
+              <div class="stat-box">
+                <div class="stat-lbl">Current Weight</div>
+                <div class="stat-num">74.2<small style="font-size:14px">kg</small></div>
+                <div class="stat-hint">Goal: 70kg</div>
+                <span class="stat-pill pill-cy">↓ 3.8kg lost</span>
+              </div>
+              <div class="stat-box">
+                <div class="stat-lbl">Water Intake</div>
+                <div class="stat-num">1.8<small style="font-size:14px">L</small></div>
+                <div class="stat-hint">/ 2.5L daily goal</div>
+                <span class="stat-pill pill-cy">72% done</span>
+              </div>
+              <div class="stat-box">
+                <div class="stat-lbl">Streak 🔥</div>
+                <div class="stat-num">24</div>
+                <div class="stat-hint">Days logged</div>
+                <span class="stat-pill pill-am">Personal best!</span>
+              </div>
+            </div>
+            <div class="panel-cal-bar">
+              <div class="cal-bar-label">
+                <span><i class="bi bi-lightning-charge-fill" style="color:var(--em)"></i> Daily calorie progress</span>
+                <span style="font-weight:600;color:var(--em-dark)">1,420 / 1,800</span>
+              </div>
+              <div class="cal-bar-track"><div class="cal-bar-fill"></div></div>
+            </div>
+            <div class="macros-row">
+              <div class="macro-box">
+                <div class="macro-val">142g</div>
+                <div class="macro-lbl">Protein</div>
+                <div class="macro-bar mb-em" style="width:80%"></div>
+              </div>
+              <div class="macro-box">
+                <div class="macro-val">180g</div>
+                <div class="macro-lbl">Carbs</div>
+                <div class="macro-bar mb-cy" style="width:65%"></div>
+              </div>
+              <div class="macro-box">
+                <div class="macro-val">48g</div>
+                <div class="macro-lbl">Fat</div>
+                <div class="macro-bar mb-pu" style="width:55%"></div>
+              </div>
+            </div>
+            <div class="ai-preview">
+              <div class="ai-msg">
+                <div class="ai-av user">A</div>
+                <div class="ai-txt">Had a grilled chicken wrap with avocado for lunch</div>
+              </div>
+              <div class="ai-msg">
+                <div class="ai-av bot">AI</div>
+                <div class="ai-txt">Great choice! That's <strong>~520 cal</strong> — 38g protein, 22g fat, 45g carbs. You're on track. For dinner, try grilled salmon with greens to stay within your target. ✅</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── LOGO STRIP ── -->
+<div class="logo-strip">
+  <p class="logo-strip-label">Trusted by health-conscious professionals at</p>
+  <div class="d-flex justify-content-center align-items-center gap-5 flex-wrap px-4">
+    <span class="logo-item">NutritionFirst</span>
+    <span class="logo-item">WellnessHub</span>
+    <span class="logo-item">FitTrack Pro</span>
+    <span class="logo-item">HealthOS</span>
+    <span class="logo-item">MindBody Inc</span>
+    <span class="logo-item">VitaCore</span>
+  </div>
+</div>
+
+<!-- ── FEATURES ── -->
+<section id="features" class="section-pad">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="eyebrow reveal">Platform features</span>
+      <h2 class="section-title reveal">Everything your diet<br/>journey needs</h2>
+      <p class="section-sub mx-auto reveal">Professional-grade nutrition intelligence wrapped in a beautifully simple experience — for anyone serious about their health.</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3 reveal">
+        <div class="feat-card">
+          <div class="feat-icon fi-em"><i class="bi bi-robot"></i></div>
+          <div class="feat-title">AI Meal Analysis</div>
+          <div class="feat-desc">Describe what you ate in plain English. NutriAI instantly calculates calories, protein, carbs, and fat — no food database searching needed.</div>
+          <span class="feat-tag">Natural language</span>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 reveal reveal-d1">
+        <div class="feat-card">
+          <div class="feat-icon fi-cy"><i class="bi bi-graph-down-arrow"></i></div>
+          <div class="feat-title">Weight Tracker</div>
+          <div class="feat-desc">Log daily weight and watch AI correlate your food habits with your trend. Get AI predictions on exactly when you'll hit your goal.</div>
+          <span class="feat-tag">Predictive insights</span>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 reveal reveal-d2">
+        <div class="feat-card">
+          <div class="feat-icon fi-pu"><i class="bi bi-calendar3"></i></div>
+          <div class="feat-title">AI Meal Planner</div>
+          <div class="feat-desc">Set your goal weight and timeline. Receive a full weekly plan with breakfast, lunch, dinner, and snacks — each with calories and prep instructions.</div>
+          <span class="feat-tag">Personalized plans</span>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 reveal reveal-d3">
+        <div class="feat-card">
+          <div class="feat-icon fi-am"><i class="bi bi-journal-check"></i></div>
+          <div class="feat-title">Weekly AI Reports</div>
+          <div class="feat-desc">Every Monday, get a personalized progress summary: weight change, calorie averages, hydration score, and AI tips for the week ahead.</div>
+          <span class="feat-tag">Automated insights</span>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="feat-card">
+          <div class="feat-icon fi-em"><i class="bi bi-droplet-half"></i></div>
+          <div class="feat-title">Hydration Tracker</div>
+          <div class="feat-desc">Track daily water intake visually. AI adjusts your hydration goals based on calorie burn, activity level, and target weight progress.</div>
+          <span class="feat-tag">Smart hydration</span>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal reveal-d1">
+        <div class="feat-card">
+          <div class="feat-icon fi-cy"><i class="bi bi-clipboard2-data"></i></div>
+          <div class="feat-title">Recipe Analyzer</div>
+          <div class="feat-desc">Paste any recipe and get a full nutrition breakdown per ingredient and per serving. AI also suggests lighter ingredient swaps to cut calories.</div>
+          <span class="feat-tag">Per-ingredient detail</span>
+        </div>
+      </div>
+      <div class="col-md-12 col-lg-4 reveal reveal-d2">
+        <div class="feat-card">
+          <div class="feat-icon fi-pu"><i class="bi bi-chat-dots"></i></div>
+          <div class="feat-title">AI Food Impact Chat</div>
+          <div class="feat-desc">Ask the AI anything. "Will this meal break my calorie budget?" or "What's a good low-carb dinner tonight?" — get instant, personalized answers.</div>
+          <span class="feat-tag">Conversational AI</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── DIET PLANS ── -->
+<section id="diet-plans" style="background:var(--surface); padding:96px 0;">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="eyebrow reveal">Diet programs</span>
+      <h2 class="section-title reveal">AI-generated plans for<br/>every goal</h2>
+      <p class="section-sub mx-auto reveal">Whether you want to lose weight, build muscle, or simply eat cleaner — NutriAI builds a plan around your exact lifestyle.</p>
+    </div>
+    <div class="row g-4 align-items-stretch">
+      <div class="col-md-6 col-lg-3 reveal">
+        <div class="diet-plan-card">
+          <span class="plan-emoji">🥗</span>
+          <div class="plan-name">Weight Loss</div>
+          <div class="plan-tagline">Calorie deficit with balanced macros — sustainable fat loss without feeling starved.</div>
+          <ul class="plan-meals">
+            <li><span>Oat bowl + berries</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Breakfast</small><small class="meal-cal">320 cal</small></span></li>
+            <li><span>Grilled chicken salad</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Lunch</small><small class="meal-cal">480 cal</small></span></li>
+            <li><span>Baked salmon + greens</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Dinner</small><small class="meal-cal">520 cal</small></span></li>
+            <li><span>Greek yogurt + almonds</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Snack</small><small class="meal-cal">180 cal</small></span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 reveal reveal-d1">
+        <div class="diet-plan-card featured">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="plan-emoji" style="margin-bottom:0">💪</span>
+            <span class="stat-pill pill-em" style="font-size:11px">Most popular</span>
+          </div>
+          <div class="plan-name">Lean Muscle</div>
+          <div class="plan-tagline">High protein, moderate carbs — build lean mass while keeping body fat low.</div>
+          <ul class="plan-meals">
+            <li><span>Eggs + whole grain toast</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Breakfast</small><small class="meal-cal">420 cal</small></span></li>
+            <li><span>Turkey rice bowl</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Lunch</small><small class="meal-cal">580 cal</small></span></li>
+            <li><span>Chicken + sweet potato</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Dinner</small><small class="meal-cal">620 cal</small></span></li>
+            <li><span>Protein shake + banana</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Post-gym</small><small class="meal-cal">280 cal</small></span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 reveal reveal-d2">
+        <div class="diet-plan-card">
+          <span class="plan-emoji">🥦</span>
+          <div class="plan-name">Clean Eating</div>
+          <div class="plan-tagline">Whole foods, minimal processing — feel energized and reduce inflammation daily.</div>
+          <ul class="plan-meals">
+            <li><span>Smoothie bowl</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Breakfast</small><small class="meal-cal">360 cal</small></span></li>
+            <li><span>Quinoa veggie bowl</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Lunch</small><small class="meal-cal">460 cal</small></span></li>
+            <li><span>Stir-fry with tofu</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Dinner</small><small class="meal-cal">480 cal</small></span></li>
+            <li><span>Mixed nuts + apple</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Snack</small><small class="meal-cal">220 cal</small></span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 reveal reveal-d3">
+        <div class="diet-plan-card">
+          <span class="plan-emoji">⚡</span>
+          <div class="plan-name">Low Carb</div>
+          <div class="plan-tagline">Reduced carbohydrates with healthy fats and protein to accelerate fat burning.</div>
+          <ul class="plan-meals">
+            <li><span>Avocado eggs</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Breakfast</small><small class="meal-cal">380 cal</small></span></li>
+            <li><span>Tuna lettuce wraps</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Lunch</small><small class="meal-cal">320 cal</small></span></li>
+            <li><span>Beef + zucchini noodles</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Dinner</small><small class="meal-cal">540 cal</small></span></li>
+            <li><span>Cheese + olives</span><span class="d-flex flex-column align-items-end"><small class="meal-time">Snack</small><small class="meal-cal">160 cal</small></span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── METRICS ── -->
+<div class="metrics-bg">
+  <div class="container">
+    <div class="d-flex align-items-center justify-content-center flex-wrap gap-0" style="row-gap:40px">
+      <div class="metric-item reveal">
+        <div class="metric-num">50K+</div>
+        <div class="metric-lbl">Active users tracking daily</div>
+      </div>
+      <div class="metric-sep d-none d-md-block" style="height:80px"></div>
+      <div class="metric-item reveal reveal-d1">
+        <div class="metric-num">2.4M</div>
+        <div class="metric-lbl">Meals analyzed by AI</div>
+      </div>
+      <div class="metric-sep d-none d-md-block" style="height:80px"></div>
+      <div class="metric-item reveal reveal-d2">
+        <div class="metric-num">89%</div>
+        <div class="metric-lbl">Users reach their goal weight</div>
+      </div>
+      <div class="metric-sep d-none d-md-block" style="height:80px"></div>
+      <div class="metric-item reveal reveal-d3">
+        <div class="metric-num">4.9★</div>
+        <div class="metric-lbl">Average user satisfaction</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── HOW IT WORKS ── -->
+<section id="how" class="section-pad">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="eyebrow reveal">Simple setup</span>
+      <h2 class="section-title reveal">Up and running in<br/>under 3 minutes</h2>
+      <p class="section-sub mx-auto reveal">No complicated setup, no manual food databases, no calorie guessing. Just describe what you eat and let the AI do the rest.</p>
+    </div>
+    <div class="row g-4 position-relative">
+      <div class="col-6 col-lg-3 reveal">
+        <div class="step-item">
+          <div class="position-relative d-inline-block">
+            <div class="step-circle"><span>🧬</span></div>
+            <span class="step-num">1</span>
+          </div>
+          <div class="step-title">Set your profile</div>
+          <div class="step-desc">Enter your height, weight, age, activity level, and target weight. NutriAI calibrates your unique daily calorie and macro targets.</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3 reveal reveal-d1">
+        <div class="step-item">
+          <div class="position-relative d-inline-block">
+            <div class="step-circle"><span>🍽</span></div>
+            <span class="step-num">2</span>
+          </div>
+          <div class="step-title">Log meals naturally</div>
+          <div class="step-desc">Just say "I had a grilled chicken wrap for lunch." The AI extracts calories and macros instantly — no searching food databases.</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3 reveal reveal-d2">
+        <div class="step-item">
+          <div class="position-relative d-inline-block">
+            <div class="step-circle"><span>⚖️</span></div>
+            <span class="step-num">3</span>
+          </div>
+          <div class="step-title">Track your weight</div>
+          <div class="step-desc">Log your daily weigh-in. Watch your progress chart update and get AI predictions on your exact goal date based on current habits.</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3 reveal reveal-d3">
+        <div class="step-item">
+          <div class="position-relative d-inline-block">
+            <div class="step-circle"><span>📈</span></div>
+            <span class="step-num">4</span>
+          </div>
+          <div class="step-title">Receive weekly insights</div>
+          <div class="step-desc">Every Monday, get a full AI progress report with what worked, what to tweak, and a personalized action plan for the week ahead.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ── -->
+<section style="background:var(--surface); padding:96px 0;">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="eyebrow reveal">Real results</span>
+      <h2 class="section-title reveal">People who transformed<br/>with NutriAI</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-quote">"I've tried every calorie app out there. NutriAI is the first one that actually felt like talking to a real nutritionist. The AI gets context — it knows when I've had a heavy week and adjusts my plan automatically."</div>
+          <div class="testi-author">
+            <div class="testi-av" style="background:linear-gradient(135deg,#10B981,#059669)">S</div>
+            <div>
+              <div style="font-size:15px;font-weight:600;color:var(--text)">Sarah Mitchell</div>
+              <div style="font-size:12px;color:var(--text3)">Lost 12kg in 4 months</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal reveal-d1">
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-quote">"The weekly AI reports changed everything for me. Getting a proper summary every Monday — with specific actions, not just charts — is exactly what I needed to stay consistent and accountable."</div>
+          <div class="testi-author">
+            <div class="testi-av" style="background:linear-gradient(135deg,#06B6D4,#8B5CF6)">M</div>
+            <div>
+              <div style="font-size:15px;font-weight:600;color:var(--text)">Marcus Chen</div>
+              <div style="font-size:12px;color:var(--text3)">Maintaining goal weight 6 months</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 col-lg-4 reveal reveal-d2">
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-quote">"As a busy GP I have no time for complicated health apps. NutriAI's AI meal planner built a custom weekly plan in under 60 seconds. The recipe analyzer has completely changed how I shop and cook."</div>
+          <div class="testi-author">
+            <div class="testi-av" style="background:linear-gradient(135deg,#8B5CF6,#10B981)">A</div>
+            <div>
+              <div style="font-size:15px;font-weight:600;color:var(--text)">Dr. Amira Hassan</div>
+              <div style="font-size:12px;color:var(--text3)">GP & NutriAI Pro user</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRICING ── -->
+<section id="pricing" class="section-pad">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="eyebrow reveal">Pricing</span>
+      <h2 class="section-title reveal">Simple, transparent pricing</h2>
+      <p class="section-sub mx-auto reveal">Start completely free. Upgrade when you're ready. No hidden fees or long-term commitments.</p>
+    </div>
+    <div class="row g-4 justify-content-center align-items-start">
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="pricing-card">
+          <div class="pricing-plan-name">Starter</div>
+          <div class="pricing-price">$0<span>/mo</span></div>
+          <div class="pricing-period">Free forever — no card required</div>
+          <div class="pricing-hr"></div>
+          <ul class="pricing-features">
+            <li><i class="bi bi-check-circle-fill"></i> AI meal analysis (5 per day)</li>
+            <li><i class="bi bi-check-circle-fill"></i> Calorie & macro tracking</li>
+            <li><i class="bi bi-check-circle-fill"></i> Basic weight tracker</li>
+            <li><i class="bi bi-check-circle-fill"></i> Water intake logging</li>
+            <li><i class="bi bi-check-circle-fill"></i> 7-day meal history</li>
+          </ul>
+          <button class="btn-pricing-outline">Get started free</button>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal reveal-d1" style="margin-top:-12px">
+        <div class="pricing-card featured-plan">
+          <div class="pricing-badge">✦ Most popular</div>
+          <div class="pricing-plan-name">Pro</div>
+          <div class="pricing-price">$12<span>/mo</span></div>
+          <div class="pricing-period">Billed monthly · Cancel anytime</div>
+          <div class="pricing-hr"></div>
+          <ul class="pricing-features">
+            <li><i class="bi bi-check-circle-fill"></i> Unlimited AI meal analysis</li>
+            <li><i class="bi bi-check-circle-fill"></i> AI Meal Planner (weekly plans)</li>
+            <li><i class="bi bi-check-circle-fill"></i> Recipe Analyzer & substitutions</li>
+            <li><i class="bi bi-check-circle-fill"></i> Advanced weight insights</li>
+            <li><i class="bi bi-check-circle-fill"></i> Weekly AI progress reports</li>
+            <li><i class="bi bi-check-circle-fill"></i> AI Food Impact Chat</li>
+            <li><i class="bi bi-check-circle-fill"></i> Full history & data export</li>
+          </ul>
+          <button class="btn-pricing-solid">Start 14-day free trial</button>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal reveal-d2">
+        <div class="pricing-card">
+          <div class="pricing-plan-name">Enterprise</div>
+          <div class="pricing-price" style="font-size:40px">Custom</div>
+          <div class="pricing-period">Volume & team pricing available</div>
+          <div class="pricing-hr"></div>
+          <ul class="pricing-features">
+            <li><i class="bi bi-check-circle-fill"></i> Everything in Pro</li>
+            <li><i class="bi bi-check-circle-fill"></i> Team dashboards & analytics</li>
+            <li><i class="bi bi-check-circle-fill"></i> API access & integrations</li>
+            <li><i class="bi bi-check-circle-fill"></i> SSO & security controls</li>
+            <li><i class="bi bi-check-circle-fill"></i> Dedicated account manager</li>
+            <li><i class="bi bi-check-circle-fill"></i> SLA guarantee</li>
+          </ul>
+          <button class="btn-pricing-outline">Contact sales</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-card reveal">
+      <h2 class="cta-title">Start your diet transformation<br/>today — it's free</h2>
+      <p class="cta-sub">Join 50,000+ people eating smarter with the power of AI nutrition science.</p>
+      <div class="cta-form">
+        <input class="cta-input" type="email" placeholder="Enter your email address"/>
+        <button class="btn-cta">Get started free <i class="bi bi-arrow-right ms-1"></i></button>
+      </div>
+      <p class="cta-disclaimer">Free plan available · No credit card required · Unsubscribe anytime</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-3 col-md-6">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div class="footer-brand-icon">🌿</div>
+          <span class="footer-brand-name">NutriAI</span>
+        </div>
+        <p>AI-powered nutrition intelligence for a healthier, smarter you. Professional-grade dietary guidance, accessible to everyone.</p>
+        <div class="d-flex gap-2 mt-3">
+          <a class="social-btn" href="#" title="Twitter"><i class="bi bi-twitter-x"></i></a>
+          <a class="social-btn" href="#" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+          <a class="social-btn" href="#" title="Instagram"><i class="bi bi-instagram"></i></a>
+          <a class="social-btn" href="#" title="YouTube"><i class="bi bi-youtube"></i></a>
+        </div>
+      </div>
+      <div class="col-6 col-lg-2 offset-lg-1">
+        <div class="footer-heading">Product</div>
+        <ul class="footer-links">
+          <li><a href="#">Features</a></li>
+          <li><a href="#">Diet Plans</a></li>
+          <li><a href="#">AI Coach</a></li>
+          <li><a href="#">Meal Planner</a></li>
+          <li><a href="#">Recipe Analyzer</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2">
+        <div class="footer-heading">Company</div>
+        <ul class="footer-links">
+          <li><a href="#">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2">
+        <div class="footer-heading">Resources</div>
+        <ul class="footer-links">
+          <li><a href="#">Nutrition guides</a></li>
+          <li><a href="#">Community</a></li>
+          <li><a href="#">Documentation</a></li>
+          <li><a href="#">API Reference</a></li>
+          <li><a href="#">Status</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2">
+        <div class="footer-heading">Legal</div>
+        <ul class="footer-links">
+          <li><a href="#">Privacy policy</a></li>
+          <li><a href="#">Terms of service</a></li>
+          <li><a href="#">Cookie policy</a></li>
+          <li><a href="#">GDPR</a></li>
+          <li><a href="#">Security</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <span class="footer-copy">© 2026 NutriAI. All rights reserved. AI nutrition advice is not a substitute for professional medical consultation.</span>
+      <div class="d-flex gap-2">
+        <a class="social-btn" href="#" title="Twitter"><i class="bi bi-twitter-x"></i></a>
+        <a class="social-btn" href="#" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const nav = document.querySelector('.navbar-nutriai');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); observer.unobserve(e.target); }
+  });
+}, { threshold: 0.07, rootMargin: '0px 0px -40px 0px' });
+reveals.forEach(el => observer.observe(el));
+
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>

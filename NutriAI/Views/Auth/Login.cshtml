@@ -5,7 +5,6 @@
 }
 
 <div class="auth-wrapper">
-    
     <div class="auth-card">
         <div class="brand">
             <h2><i class="fas fa-leaf"></i> NutriAI</h2>
@@ -14,6 +13,20 @@
         @if (TempData["Success"] != null)
         {
             <div class="alert alert-success">@TempData["Success"]</div>
+        }
+        @if (Model.ShowEmailConfirmationWarning)
+        {
+            <div class="alert alert-warning">
+                <strong>Email not confirmed.</strong>
+                Please confirm your email before signing in. Check your inbox for the confirmation link.
+            </div>
+            <form asp-action="ResendConfirmation" method="post" class="mb-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="email" value="@Model.PendingConfirmationEmail" />
+                <button type="submit" class="btn btn-outline-nutri w-100">
+                    Resend Confirmation Email
+                </button>
+            </form>
         }
         <form asp-action="Login" method="post" class="needs-validation" novalidate>
             @Html.AntiForgeryToken()
@@ -32,7 +45,7 @@
                 </div>
                 <span asp-validation-for="Password" class="text-danger small-text"></span>
             </div>
-                        <div class="mb-3 form-check">
+            <div class="mb-3 form-check">
                 <input asp-for="RememberMe" class="form-check-input" />
                 <label asp-for="RememberMe" class="form-check-label"></label>
             </div>

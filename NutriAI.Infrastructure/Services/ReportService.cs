@@ -52,8 +52,8 @@ public class ReportService : IReportService
         var weightTrend = new List<double>();
         var hydrationDays = new List<int>();
         var goal = await _userGoalRepository.GetByUserIdAsync(userId, cancellationToken);
-        var waterGoal = goal?.DailyWaterTargetMl ?? 2500;
-        var calorieTarget = goal?.DailyCalorieTarget ?? 2000;
+        var waterGoal = goal?.DailyWaterTargetMl ?? 0;
+        var calorieTarget = goal?.DailyCalorieTarget ?? 0;
 
         for (var i = 0; i < 7; i++)
         {

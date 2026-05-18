@@ -39,20 +39,45 @@ public class DashboardService : IDashboardService
         var meals = await _mealLogRepository.GetByUserForDateAsync(userId, today, cancellationToken);
         var goal = await _userGoalRepository.GetByUserIdAsync(userId, cancellationToken);
         var latestWeight = await _weightLogRepository.GetLatestByUserAsync(userId, cancellationToken);
+        var weightHistory = await _weightLogRepository.GetByUserAsync(userId, cancellationToken);
         var waterMl = await _waterLogRepository.GetTotalForDateAsync(userId, today, cancellationToken);
         var plans = await _mealPlanRepository.GetByUserAsync(userId, cancellationToken);
         var latestReport = await _weeklyReportRepository.GetLatestByUserAsync(userId, cancellationToken);
 
         var caloriesConsumed = meals.Sum(m => m.Calories);
-        var calorieGoal = goal?.DailyCalorieTarget ?? 2000;
-        var waterGoal = goal?.DailyWaterTargetMl ?? 2500;
+        var calorieGoal = goal?.DailyCalorieTarget ?? 0;
+        var waterGoal = goal?.DailyWaterTargetMl ?? 0;
         var context = NutritionContextHelper.FromGoal(goal);
 
         var streak = await CalculateStreakAsync(userId, cancellationToken);
         var insight = await _aiService.GetDashboardInsightAsync(context, caloriesConsumed, waterMl, cancellationToken)
-            ?? (caloriesConsumed < calorieGoal
-                ? $"You're {calorieGoal - caloriesConsumed} calories under your goal. Consider a protein-rich snack."
-                : "Great job staying on track with your nutrition today!");
+            ?? (goal == null
+                ? "Complete your profile to unlock personalized nutrition insights."
+                : caloriesConsumed < calorieGoal
+                    ? $"You're {calorieGoal - caloriesConsumed} calories under your goal. Consider a protein-rich snack."
+                    : "Great job staying on track with your nutrition today!");
+
+        var weeklyCalories = new List<DailyCaloriePointDto>();
+        for (var i = 6; i >= 0; i--)
+        {
+            var day = today.Date.AddDays(-i);
+            var dayMeals = await _mealLogRepository.GetByUserForDateAsync(userId, day, cancellationToken);
+            weeklyCalories.Add(new DailyCaloriePointDto(day.ToString("ddd"), dayMeals.Sum(m => m.Calories)));
+        }
+
+        var recentWeights = weightHistory
+            .OrderByDescending(h => h.LoggedAt)
+            .Take(7)
+            .Reverse()
+            .ToList();
+
+        var weightTrend = recentWeights.Count > 0
+            ? recentWeights.Select((h, index) =>
+                new DailyWeightPointDto($"W{index + 1}", h.WeightKg)).ToList()
+            : new List<DailyWeightPointDto>
+            {
+                new("Now", latestWeight?.WeightKg ?? goal?.CurrentWeightKg)
+            };
 
         return new DashboardSummaryDto(
             caloriesConsumed,
@@ -65,6 +90,8 @@ public class DashboardService : IDashboardService
             insight,
             meals.Take(3).Select(m => new RecentMealDto(m.Description, m.Calories, m.LoggedAt.ToLocalTime().ToString("h:mm tt"))).ToList(),
             plans.Take(3).Select(p => new SavedPlanDto(p.Name, p.TimelineWeeks * 7)).ToList(),
+            weeklyCalories,
+            weightTrend,
             latestReport?.BestDay,
             latestReport?.WorstDay);
     }
