@@ -1,22 +1,33 @@
 using NutriAI.Application.Interfaces.Repositories;
 using NutriAI.Application.Interfaces.Services;
 using NutriAI.Domain.Entities;
+using NutriAI.Infrastructure.AI;
 
 namespace NutriAI.Infrastructure.Services;
 
 public class MealPlannerService : IMealPlannerService
 {
     private readonly IMealPlanRepository _mealPlanRepository;
+    private readonly IUserGoalRepository _userGoalRepository;
+    private readonly IAiNutritionService _aiService;
 
     private static readonly string[] Days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-    public MealPlannerService(IMealPlanRepository mealPlanRepository)
+    public MealPlannerService(
+        IMealPlanRepository mealPlanRepository,
+        IUserGoalRepository userGoalRepository,
+        IAiNutritionService aiService)
     {
         _mealPlanRepository = mealPlanRepository;
+        _userGoalRepository = userGoalRepository;
+        _aiService = aiService;
     }
 
     public async Task<object> GeneratePlanAsync(string userId, double goalWeight, int timelineWeeks, string dietaryPreference, CancellationToken cancellationToken = default)
     {
+        var goal = await _userGoalRepository.GetByUserIdAsync(userId, cancellationToken);
+        var context = NutritionContextHelper.FromGoal(goal);
+
         var plan = new MealPlan
         {
             UserId = userId,
@@ -27,12 +38,36 @@ public class MealPlannerService : IMealPlannerService
             CreatedAt = DateTime.UtcNow
         };
 
-        foreach (var day in Days)
+        var aiDays = await _aiService.GenerateMealPlanAsync(goalWeight, timelineWeeks, dietaryPreference, context, cancellationToken);
+        if (aiDays is { Count: > 0 })
         {
-            plan.Items.Add(CreateItem(day, "Breakfast", "Balanced breakfast bowl", 380, "Prepare oats, fruit, and protein."));
-            plan.Items.Add(CreateItem(day, "Lunch", "Lean protein lunch", 520, "Grill protein with vegetables and whole grains."));
-            plan.Items.Add(CreateItem(day, "Dinner", "Light dinner plate", 480, "Bake or steam dinner with greens."));
-            plan.Items.Add(CreateItem(day, "Snacks", "Healthy snack", 200, "Portion nuts or yogurt with fruit."));
+            foreach (var day in aiDays)
+            {
+                foreach (var meal in day.Meals)
+                {
+                    plan.Items.Add(new MealPlanItem
+                    {
+                        DayName = day.Day,
+                        MealType = meal.MealType,
+                        Name = meal.Name,
+                        Calories = meal.Calories,
+                        Protein = meal.Protein,
+                        Carbs = meal.Carbs,
+                        Fat = meal.Fat,
+                        Instructions = meal.Instructions
+                    });
+                }
+            }
+        }
+        else
+        {
+            foreach (var day in Days)
+            {
+                plan.Items.Add(CreateItem(day, "Breakfast", "Balanced breakfast bowl", 380, "Prepare oats, fruit, and protein."));
+                plan.Items.Add(CreateItem(day, "Lunch", "Lean protein lunch", 520, "Grill protein with vegetables and whole grains."));
+                plan.Items.Add(CreateItem(day, "Dinner", "Light dinner plate", 480, "Bake or steam dinner with greens."));
+                plan.Items.Add(CreateItem(day, "Snacks", "Healthy snack", 200, "Portion nuts or yogurt with fruit."));
+            }
         }
 
         await _mealPlanRepository.AddAsync(plan, cancellationToken);

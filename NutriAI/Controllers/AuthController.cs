@@ -37,7 +37,10 @@ public class AuthController : Controller
             return View(model);
         }
 
-        return LocalRedirect(string.IsNullOrEmpty(model.ReturnUrl) ? "/Dashboard" : model.ReturnUrl);
+        if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+            return LocalRedirect(model.ReturnUrl);
+
+        return RedirectToAction("Index", "Dashboard");
     }
 
     [AllowAnonymous, HttpGet]

@@ -27,6 +27,8 @@ async function loadWeightData() {
         document.getElementById('displayGoalWeight').textContent = data.goalWeight;
         const diff = (data.currentWeight - data.goalWeight).toFixed(1);
         document.getElementById('weightToGo').textContent = diff > 0 ? diff : '0';
+        const insightEl = document.getElementById('weightAiInsight');
+        if (insightEl && data.aiInsight) insightEl.textContent = data.aiInsight;
 
         renderHistory(data.history);
         renderChart(data.history, data.goalWeight);

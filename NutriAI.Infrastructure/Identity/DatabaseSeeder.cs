@@ -29,6 +29,12 @@ public static class DatabaseSeeder
                 await roleManager.CreateAsync(new IdentityRole(role));
         }
 
+        if (string.IsNullOrWhiteSpace(adminSettings.Email) || string.IsNullOrWhiteSpace(adminSettings.Password))
+        {
+            logger.LogWarning("AdminSeed email or password not configured; skipping default admin creation.");
+            return;
+        }
+
         var admin = await userManager.FindByEmailAsync(adminSettings.Email);
         if (admin == null)
         {

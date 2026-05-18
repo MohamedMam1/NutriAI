@@ -9,6 +9,7 @@ using NutriAI.Application.Interfaces.Services;
 using NutriAI.Domain.Entities;
 using NutriAI.Infrastructure.Data;
 using NutriAI.Infrastructure.Repositories;
+using NutriAI.Infrastructure.AI;
 using NutriAI.Infrastructure.Services;
 using NutriAI.Infrastructure.Services.Email;
 
@@ -18,8 +19,16 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddAntiforgery(options => options.HeaderName = "X-CSRF-TOKEN");
+
         services.Configure<EmailSettings>(configuration.GetSection(EmailSettings.SectionName));
         services.Configure<AdminSeedSettings>(configuration.GetSection(AdminSeedSettings.SectionName));
+        services.Configure<OpenAiSettings>(configuration.GetSection(OpenAiSettings.SectionName));
+
+        services.AddHttpClient<IAiNutritionService, OpenAiNutritionService>(client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(60);
+        });
 
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
@@ -49,7 +58,10 @@ public static class DependencyInjection
             options.ExpireTimeSpan = TimeSpan.FromDays(14);
             options.SlidingExpiration = true;
             options.Cookie.HttpOnly = true;
-            options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+            options.Cookie.SecurePolicy = configuration["ASPNETCORE_ENVIRONMENT"] == "Development"
+                ? CookieSecurePolicy.SameAsRequest
+                : CookieSecurePolicy.Always;
+            options.Cookie.SameSite = SameSiteMode.Lax;
         });
 
         services.AddScoped<IEmailService, SmtpEmailService>();

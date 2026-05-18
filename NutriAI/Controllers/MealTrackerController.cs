@@ -26,8 +26,13 @@ public class MealTrackerController : Controller
         Json(await _mealTrackerService.GetMealsAsync(User.GetUserId(), cancellationToken));
 
     [HttpPost]
-    public async Task<IActionResult> Analyze([FromBody] MealAnalyzeRequestDto request, CancellationToken cancellationToken) =>
-        Json(await _mealTrackerService.AnalyzeMealAsync(User.GetUserId(), request, cancellationToken));
+    public async Task<IActionResult> Analyze([FromBody] MealAnalyzeRequestDto request, CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        return Json(await _mealTrackerService.AnalyzeMealAsync(User.GetUserId(), request, cancellationToken));
+    }
 
     [HttpDelete]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)

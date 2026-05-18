@@ -23,6 +23,15 @@ function renderStats(data) {
     document.getElementById('waterProgress').style.width = (data.waterMl / data.waterGoalMl * 100) + '%';
     document.getElementById('weeklyStreak').textContent = data.weeklyStreak;
     document.getElementById('aiInsight').textContent = data.aiInsight;
+
+    if (data.latestReportBestDay && data.latestReportWorstDay) {
+        const row = document.getElementById('weeklyReportRow');
+        const summary = document.getElementById('weeklyReportSummary');
+        if (row && summary) {
+            row.style.display = '';
+            summary.textContent = `Best day: ${data.latestReportBestDay}. Day to improve: ${data.latestReportWorstDay}. View full details in Reports.`;
+        }
+    }
 }
 
 function renderLists(data) {

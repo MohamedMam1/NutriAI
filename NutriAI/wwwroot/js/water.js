@@ -39,6 +39,8 @@ function updateUi(data) {
     document.getElementById('waterGoal').textContent = data.goalMl;
     document.getElementById('waterPercent').textContent = data.percent + '%';
     document.getElementById('waterBar').style.width = data.percent + '%';
+    const rec = document.getElementById('waterRecommendation');
+    if (rec && data.recommendation) rec.textContent = data.recommendation;
     drawCircle(data.percent);
 }
 
