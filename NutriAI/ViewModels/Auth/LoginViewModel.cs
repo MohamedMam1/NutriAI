@@ -10,6 +10,12 @@ public class LoginViewModel
     [Required, DataType(DataType.Password)]
     public string Password { get; set; } = string.Empty;
 
+    [Display(Name = "Remember me")]
     public bool RememberMe { get; set; }
+
     public string? ReturnUrl { get; set; }
+
+    public bool ShowEmailConfirmationWarning { get; set; }
+
+    public string? PendingConfirmationEmail { get; set; }
 }

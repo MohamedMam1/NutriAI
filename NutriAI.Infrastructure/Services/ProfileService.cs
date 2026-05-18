@@ -27,11 +27,28 @@ public class ProfileService : IProfileService
         var goal = await _userGoalRepository.GetByUserIdAsync(userId, cancellationToken);
         if (goal == null)
         {
-            return new ProfileDto(user.FullName, 28, "Male", 175, 78, 72, "Moderately Active");
+            return new ProfileDto(
+                user.Email ?? string.Empty,
+                user.FullName,
+                0,
+                string.Empty,
+                0,
+                0,
+                0,
+                string.Empty,
+                0);
         }
 
-        return new ProfileDto(user.FullName, goal.Age, goal.Gender, goal.HeightCm,
-            goal.CurrentWeightKg, goal.GoalWeightKg, goal.ActivityLevel);
+        return new ProfileDto(
+            user.Email ?? string.Empty,
+            user.FullName,
+            goal.Age,
+            goal.Gender,
+            goal.HeightCm,
+            goal.CurrentWeightKg,
+            goal.GoalWeightKg,
+            goal.ActivityLevel,
+            goal.DailyWaterTargetMl);
     }
 
     public async Task<ServiceResult> SaveProfileAsync(string userId, ProfileDto dto, CancellationToken cancellationToken = default)
@@ -55,9 +72,9 @@ public class ProfileService : IProfileService
         goal.CurrentWeightKg = dto.CurrentWeight;
         goal.GoalWeightKg = dto.GoalWeight;
         goal.ActivityLevel = dto.ActivityLevel;
-        var (dailyCalories, dailyWater) = NutritionTargetsCalculator.Calculate(dto);
+        var (dailyCalories, calculatedWater) = NutritionTargetsCalculator.Calculate(dto);
         goal.DailyCalorieTarget = dailyCalories;
-        goal.DailyWaterTargetMl = dailyWater;
+        goal.DailyWaterTargetMl = dto.DailyWaterTargetMl > 0 ? dto.DailyWaterTargetMl : calculatedWater;
         goal.UpdatedAt = DateTime.UtcNow;
 
         await _userGoalRepository.UpdateAsync(goal, cancellationToken);

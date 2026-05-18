@@ -17,7 +17,8 @@ async function saveProfile(e) {
         height: parseFloat(document.getElementById('height').value),
         currentWeight: parseFloat(document.getElementById('currentWeight').value),
         goalWeight: parseFloat(document.getElementById('goalWeight').value),
-        activityLevel: document.getElementById('activityLevel').value
+        activityLevel: document.getElementById('activityLevel').value,
+        dailyWaterTargetMl: parseInt(document.getElementById('dailyWater').value, 10)
     };
 
     try {

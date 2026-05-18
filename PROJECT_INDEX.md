@@ -79,7 +79,7 @@ JSON actions return `application/json`. POST/DELETE from JS require header `X-CS
 
 | HTTP | Action | Route | Returns | Notes |
 |------|--------|-------|---------|-------|
-| GET | `Index` | `/` or `/Home` | View | Landing page |
+| GET | `Index` | `/` or `/Home` | View | Marketing landing (`_LandingLayout`, `_LandingContent`, `wwwroot/css/landing.css`, `wwwroot/js/landing.js`) |
 | GET | `Privacy` | `/Home/Privacy` | View | Privacy policy |
 | GET | `Error` | `/Home/Error` | View | Error page (no cache) |
 
@@ -107,8 +107,8 @@ JSON actions return `application/json`. POST/DELETE from JS require header `X-CS
 | GET | `ResetPassword` | `/Auth/ResetPassword?email&token` | Anonymous | View |
 | POST | `ResetPassword` | `/Auth/ResetPassword` | Anonymous | Redirect → Login |
 | GET | `ConfirmEmail` | `/Auth/ConfirmEmail?userId&token` | Anonymous | View |
-| GET | `ResendConfirmation` | `/Auth/ResendConfirmation` | Anonymous | View |
-| POST | `ResendConfirmation` | `/Auth/ResendConfirmation` | Anonymous | Redirect |
+| GET | `ResendConfirmation` | `/Auth/ResendConfirmation?email=` | Anonymous | View (optional email query) |
+| POST | `ResendConfirmation` | `/Auth/ResendConfirmation` | Anonymous | Redirect (body: `email`; used from login with hidden field) |
 | GET | `ChangePassword` | `/Auth/ChangePassword` | Authorized | View |
 | POST | `ChangePassword` | `/Auth/ChangePassword` | Authorized | Redirect → Profile |
 | GET | `AccessDenied` | `/Auth/AccessDenied` | Anonymous | View |
@@ -270,7 +270,8 @@ JSON actions return `application/json`. POST/DELETE from JS require header `X-CS
 | Script | Calls |
 |--------|--------|
 | `site.js` | `NutriAI.fetchJson`, `showToast`, CSRF for non-GET |
-| `dashboard.js` | `GET /Dashboard/GetSummary` |
+| `dashboard.js` | `GET /Dashboard/GetSummary` (dynamic weekly calories & weight trend) |
+| `landing.js` | Landing scroll/reveal animations |
 | `mealtracker.js` | `GET /MealTracker/GetMeals`, `POST /MealTracker/Analyze`, `DELETE /MealTracker/Delete?id=` |
 | `weight.js` | `GET /Weight/GetData`, `POST /Weight/Add` |
 | `water.js` | `GET /Water/GetStatus`, `POST /Water/Add` |
@@ -306,7 +307,8 @@ JSON actions return `application/json`. POST/DELETE from JS require header `X-CS
 
 | Method | Purpose |
 |--------|---------|
-| `RegisterAsync` | Create user, assign `User` role, send confirmation email |
+| `RegisterAsync` | Create user, `UserGoal`, initial `WeightLog`, assign `User` role, send confirmation email |
+| `LoginAsync` | Returns `ErrorCode` `EmailNotConfirmed` when email unconfirmed |
 | `LoginAsync` | Password sign-in (requires confirmed email) |
 | `LogoutAsync` | Sign out |
 | `ForgotPasswordAsync` | Send reset link email |
@@ -458,10 +460,11 @@ Registered in `DependencyInjection.cs`.
 
 | Type | File | Used for |
 |------|------|----------|
-| `RegisterDto`, `LoginDto`, `ForgotPasswordDto`, `ResetPasswordDto`, `ChangePasswordDto` | `AuthDtos.cs` | Auth service |
-| `ProfileDto` | `ProfileDtos.cs` | Profile API |
+| `RegisterDto` (includes age, gender, height, weights, activity, daily water) | `AuthDtos.cs` | Auth registration |
+| `LoginDto`, `ForgotPasswordDto`, `ResetPasswordDto`, `ChangePasswordDto` | `AuthDtos.cs` | Auth service |
+| `ProfileDto` (email read-only on UI, daily water target) | `ProfileDtos.cs` | Profile API |
 | `MealAnalyzeRequestDto`, `MealLogDto`, `MealAnalyzeResponseDto` | `MealDtos.cs` | Meal tracker |
-| `DashboardSummaryDto`, `RecentMealDto`, `SavedPlanDto` | `DashboardDtos.cs` | Dashboard |
+| `DashboardSummaryDto`, `RecentMealDto`, `SavedPlanDto`, `DailyCaloriePointDto`, `DailyWeightPointDto` | `DashboardDtos.cs` | Dashboard (charts use weekly DB data) |
 | `MealAnalysisResult`, `MealPlanDayResult`, `RecipeAnalysisResult`, `UserNutritionContext`, … | `AiNutritionDtos.cs` | AI service |
 
 **Controller-local request types:**
@@ -494,7 +497,8 @@ Registered in `DependencyInjection.cs`.
 
 | View path | Controller.Action | Layout |
 |-----------|-------------------|--------|
-| `Home/Index` | `Home.Index` | `_Layout` (anonymous landing) |
+| `Home/Index` | `Home.Index` | `_LandingLayout` |
+| `Home/_LandingContent` | partial | Landing sections |
 | `Dashboard/Index` | `Dashboard.Index` | `_Layout` |
 | `MealTracker/Index` | `MealTracker.Index` | `_Layout` |
 | `Weight/Index` | `Weight.Index` | `_Layout` |

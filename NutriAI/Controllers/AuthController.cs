@@ -33,6 +33,14 @@ public class AuthController : Controller
         var result = await _authService.LoginAsync(new LoginDto(model.Email, model.Password, model.RememberMe));
         if (!result.Succeeded)
         {
+            if (result.ErrorCode == "EmailNotConfirmed")
+            {
+                model.ShowEmailConfirmationWarning = true;
+                model.PendingConfirmationEmail = model.Email;
+                ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault() ?? "Please confirm your email.");
+                return View(model);
+            }
+
             ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault() ?? "Login failed.");
             return View(model);
         }
@@ -52,8 +60,19 @@ public class AuthController : Controller
         if (!ModelState.IsValid) return View(model);
 
         var result = await _authService.RegisterAsync(
-            new RegisterDto(model.FullName, model.Email, model.Password, model.ConfirmPassword),
-            BuildUrl("/Auth/ConfirmEmail?userId={0}&token={1}"));
+            new RegisterDto(
+                model.FullName,
+                model.Email,
+                model.Password,
+                model.ConfirmPassword,
+                model.Age,
+                model.Gender,
+                model.HeightCm,
+                model.CurrentWeightKg,
+                model.GoalWeightKg,
+                model.ActivityLevel,
+                model.DailyWaterTargetMl),
+            BuildCallbackUrl("/Auth/ConfirmEmail?userId={0}&token={1}"));
 
         if (!result.Succeeded)
         {
@@ -63,6 +82,7 @@ public class AuthController : Controller
         }
 
         TempData["Success"] = result.Message;
+        TempData["RegisteredEmail"] = model.Email;
         return RedirectToAction(nameof(RegisterConfirmation));
     }
 
@@ -70,6 +90,7 @@ public class AuthController : Controller
     public IActionResult RegisterConfirmation()
     {
         ViewData["Title"] = "Check Your Email";
+        ViewData["RegisteredEmail"] = TempData["RegisteredEmail"]?.ToString();
         return View();
     }
 
@@ -90,7 +111,7 @@ public class AuthController : Controller
 
         await _authService.ForgotPasswordAsync(
             new ForgotPasswordDto(model.Email),
-            BuildUrl("/Auth/ResetPassword?email={0}&token={1}"));
+            BuildCallbackUrl("/Auth/ResetPassword?email={0}&token={1}"));
 
         TempData["Success"] = "If an account exists, a password reset link has been sent.";
         return RedirectToAction(nameof(ForgotPasswordConfirmation));
@@ -132,14 +153,24 @@ public class AuthController : Controller
     }
 
     [AllowAnonymous, HttpGet]
-    public IActionResult ResendConfirmation() => View();
+    public IActionResult ResendConfirmation()
+    {
+        ViewData["Email"] = Request.Query["email"].ToString();
+        return View();
+    }
 
     [AllowAnonymous, HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> ResendConfirmation(string email)
     {
-        var result = await _authService.ResendConfirmationAsync(email, BuildUrl("/Auth/ConfirmEmail?userId={0}&token={1}"));
-        TempData["Success"] = result.Succeeded ? result.Message : result.Errors.FirstOrDefault();
-        return RedirectToAction(nameof(ResendConfirmation));
+        var result = await _authService.ResendConfirmationAsync(
+            email,
+            BuildCallbackUrl("/Auth/ConfirmEmail?userId={0}&token={1}"));
+
+        TempData["Success"] = result.Succeeded
+            ? result.Message
+            : result.Errors.FirstOrDefault() ?? "Unable to send confirmation email.";
+
+        return RedirectToAction(nameof(ResendConfirmation), new { email });
     }
 
     [Authorize]
@@ -170,6 +201,12 @@ public class AuthController : Controller
     [AllowAnonymous, HttpGet]
     public IActionResult AccessDenied() => View();
 
-    private string BuildUrl(string pathTemplate) =>
-        _configuration["AppSettings:BaseUrl"]?.TrimEnd('/') + string.Format(pathTemplate, "{0}", "{1}");
+    private string BuildCallbackUrl(string pathTemplate)
+    {
+        var baseUrl = _configuration["AppSettings:BaseUrl"]?.TrimEnd('/');
+        if (string.IsNullOrWhiteSpace(baseUrl))
+            baseUrl = $"{Request.Scheme}://{Request.Host}";
+
+        return baseUrl + string.Format(pathTemplate, "{0}", "{1}");
+    }
 }
