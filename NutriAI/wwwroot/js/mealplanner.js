@@ -20,9 +20,16 @@ async function generatePlan(e) {
             method: 'POST',
             body: JSON.stringify(payload)
         });
+        if (!data.success) {
+            NutriAI.showToast(data.message || 'Could not generate meal plan.', 'danger');
+            return;
+        }
+        if (data.message && data.dataSource === 'database') {
+            NutriAI.showToast(data.message, 'warning');
+        }
         renderPlan(data);
     } catch {
-        NutriAI.showToast('Failed to generate meal plan', 'danger');
+        NutriAI.showToast('Failed to generate meal plan. Please wait for the AI response.', 'danger');
     } finally {
         loading.classList.remove('active');
     }

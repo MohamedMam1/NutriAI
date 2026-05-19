@@ -22,6 +22,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<WeeklyReport> WeeklyReports => Set<WeeklyReport>();
     public DbSet<AIChat> AIChats => Set<AIChat>();
     public DbSet<Notification> Notifications => Set<Notification>();
+    public DbSet<SeedMealTemplate> SeedMealTemplates => Set<SeedMealTemplate>();
+    public DbSet<SeedMealPlanTemplate> SeedMealPlanTemplates => Set<SeedMealPlanTemplate>();
+    public DbSet<SeedRecipeTemplate> SeedRecipeTemplates => Set<SeedRecipeTemplate>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

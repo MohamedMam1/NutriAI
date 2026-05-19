@@ -1,11 +1,14 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NutriAI.Application.DTOs;
 using NutriAI.Application.Interfaces.Services;
+using NutriAI.Domain.Constants;
 using NutriAI.Extensions;
 using NutriAI.ViewModels.Profile;
 
 namespace NutriAI.Controllers;
 
+[Authorize(Roles = Roles.User)]
 public class ProfileController : Controller
 {
     private readonly IProfileService _profileService;

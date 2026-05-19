@@ -109,6 +109,9 @@ public class AuthService : IAuthService
         if (user == null)
             return ServiceResult.Failure("Invalid login attempt.");
 
+        if (user.IsBanned)
+            return ServiceResult.Failure("AccountBanned", Application.Common.AiMessages.AccountBanned);
+
         if (!user.EmailConfirmed)
             return ServiceResult.Failure(
                 "EmailNotConfirmed",

@@ -15,10 +15,17 @@ async function analyzeRecipe(e) {
             method: 'POST',
             body: JSON.stringify({ recipeText: text })
         });
+        if (!data.success) {
+            NutriAI.showToast(data.message || 'Could not analyze recipe.', 'danger');
+            return;
+        }
+        if (data.message && data.dataSource === 'database') {
+            NutriAI.showToast(data.message, 'warning');
+        }
         renderResults(data);
         document.getElementById('recipeResults').classList.remove('d-none');
     } catch {
-        NutriAI.showToast('Failed to analyze recipe', 'danger');
+        NutriAI.showToast('Failed to analyze recipe. Please wait for the AI response.', 'danger');
     } finally {
         loading.classList.remove('active');
     }

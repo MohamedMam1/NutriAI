@@ -257,8 +257,18 @@ JSON actions return `application/json`. POST/DELETE from JS require header `X-CS
 | HTTP | Action | Route | Query | Returns |
 |------|--------|-------|-------|---------|
 | GET | `Index` | `/Admin` | — | View |
-| GET | `GetStats` | `/Admin/GetStats` | — | JSON platform stats |
-| GET | `GetUsers` | `/Admin/GetUsers` | `page`, `search` | JSON user list |
+| GET | `GetStats` | `/Admin/GetStats` | — | JSON platform health stats |
+| GET | `GetUsers` | `/Admin/GetUsers` | `page`, `search` | JSON user list (paginated) |
+| GET | `GetUser` | `/Admin/GetUser` | `id` | JSON single user |
+| POST | `CreateUser` | `/Admin/CreateUser` | body | Create user |
+| PUT | `UpdateUser` | `/Admin/UpdateUser/{id}` | body | Update user |
+| DELETE | `DeleteUser` | `/Admin/DeleteUser/{id}` | — | Delete user |
+| POST | `SetBan` | `/Admin/SetBan/{id}` | `{ banned }` | Ban/unban user |
+| GET | `GetMealLogs` | `/Admin/GetMealLogs` | `page`, `userId?` | All meal logs with user info |
+| GET | `GetRecipeAnalyses` | `/Admin/GetRecipeAnalyses` | `page`, `userId?` | Recipe analysis history |
+| GET | `GetWeeklyReports` | `/Admin/GetWeeklyReports` | `page`, `userId?` | Weekly reports per user |
+
+**Auth redirect:** Admins log in → `/Admin` (not user dashboard). User nav hidden for `Roles.Admin` only.
 
 **View:** `Views/Admin/Index.cshtml`  
 **JS:** `wwwroot/js/admin.js`
@@ -273,13 +283,13 @@ JSON actions return `application/json`. POST/DELETE from JS require header `X-CS
 | `dashboard.js` | `GET /Dashboard/GetSummary` (dynamic weekly calories & weight trend) |
 | `landing.js` | Landing scroll/reveal animations |
 | `mealtracker.js` | `GET /MealTracker/GetMeals`, `POST /MealTracker/Analyze`, `DELETE /MealTracker/Delete?id=` |
-| `weight.js` | `GET /Weight/GetData`, `POST /Weight/Add` |
+| `weight.js` | `GET /Weight/GetData`, `POST /Weight/Add`, `DELETE /Weight/Delete?id=` |
 | `water.js` | `GET /Water/GetStatus`, `POST /Water/Add` |
 | `mealplanner.js` | `POST /MealPlanner/Generate` |
 | `recipe.js` | `POST /Recipe/Analyze` |
 | `report.js` | `GET /Report/GetWeeklyData` |
 | `profile.js` | `POST /Profile/Save` |
-| `admin.js` | `GET /Admin/GetStats`, `GET /Admin/GetUsers` |
+| `admin.js` | Admin stats, user CRUD, ban, meal logs, recipes, weekly reports panels |
 | `auth.js` | UI only (forms post to Auth actions) |
 
 ---
@@ -309,7 +319,7 @@ JSON actions return `application/json`. POST/DELETE from JS require header `X-CS
 |--------|---------|
 | `RegisterAsync` | Create user, `UserGoal`, initial `WeightLog`, assign `User` role, send confirmation email |
 | `LoginAsync` | Returns `ErrorCode` `EmailNotConfirmed` when email unconfirmed |
-| `LoginAsync` | Password sign-in (requires confirmed email) |
+| `LoginAsync` | Password sign-in (requires confirmed email); `ErrorCode` `AccountBanned` when banned |
 | `LogoutAsync` | Sign out |
 | `ForgotPasswordAsync` | Send reset link email |
 | `ResetPasswordAsync` | Reset password with token |
@@ -336,7 +346,8 @@ JSON actions return `application/json`. POST/DELETE from JS require header `X-CS
 | Method | Purpose |
 |--------|---------|
 | `GetDataAsync` | Weight history, goals, AI insight |
-| `AddWeightAsync` | Log weight, update `UserGoal.CurrentWeightKg` |
+| `AddWeightAsync` | Log weight with validation (30–300 kg, max 3 kg/day change) |
+| `DeleteWeightAsync` | Delete weight entry (owner only) |
 
 ### IWaterService → WaterService
 

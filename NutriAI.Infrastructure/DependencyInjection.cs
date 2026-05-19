@@ -27,7 +27,7 @@ public static class DependencyInjection
 
         services.AddHttpClient<IAiNutritionService, OpenAiNutritionService>(client =>
         {
-            client.Timeout = TimeSpan.FromSeconds(60);
+            client.Timeout = TimeSpan.FromMinutes(2);
         });
 
         services.AddDbContext<ApplicationDbContext>(options =>
@@ -86,6 +86,7 @@ public static class DependencyInjection
         services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<IAIChatRepository, AIChatRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IFallbackNutritionRepository, FallbackNutritionRepository>();
 
         return services;
     }

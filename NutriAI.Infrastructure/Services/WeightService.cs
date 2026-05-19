@@ -2,6 +2,7 @@ using NutriAI.Application.Interfaces.Repositories;
 using NutriAI.Application.Interfaces.Services;
 using NutriAI.Domain.Entities;
 using NutriAI.Infrastructure.AI;
+using NutriAI.Infrastructure.Validation;
 
 namespace NutriAI.Infrastructure.Services;
 
@@ -28,23 +29,26 @@ public class WeightService : IWeightService
         var current = history.LastOrDefault()?.WeightKg ?? goal?.CurrentWeightKg ?? 0;
         var context = NutritionContextHelper.FromGoal(goal);
 
-        var aiInsight = await _aiService.GetWeightInsightAsync(context, current, cancellationToken)
-            ?? "Log meals daily so AI can correlate your nutrition patterns with weight progress toward your goal.";
+        string? aiInsight = null;
+        if (_aiService.IsConfigured)
+            aiInsight = await _aiService.GetWeightInsightAsync(context, current, cancellationToken);
 
         return new
         {
             currentWeight = current,
             goalWeight = goal?.GoalWeightKg ?? 0,
             startWeight = history.FirstOrDefault()?.WeightKg ?? current,
-            aiInsight,
-            history = history.Select(h => new { date = h.LoggedAt.ToString("yyyy-MM-dd"), weight = h.WeightKg })
+            aiInsight = aiInsight ?? "Log meals and weight consistently to see personalized AI insights here.",
+            history = history.Select(h => new { id = h.Id, date = h.LoggedAt.ToString("yyyy-MM-dd"), weight = h.WeightKg })
         };
     }
 
     public async Task<object> AddWeightAsync(string userId, double weight, CancellationToken cancellationToken = default)
     {
-        if (weight is < 20 or > 500)
-            throw new ArgumentOutOfRangeException(nameof(weight), "Weight must be between 20 and 500 kg.");
+        var latest = await _weightLogRepository.GetLatestByUserAsync(userId, cancellationToken);
+        var validationError = WeightValidation.ValidateNewEntry(weight, latest?.WeightKg);
+        if (validationError != null)
+            return new { success = false, message = validationError };
 
         var log = new WeightLog { UserId = userId, WeightKg = weight, LoggedAt = DateTime.UtcNow };
         await _weightLogRepository.AddAsync(log, cancellationToken);
@@ -58,6 +62,17 @@ public class WeightService : IWeightService
         }
 
         await _weightLogRepository.SaveChangesAsync(cancellationToken);
-        return new { success = true, entry = new { date = log.LoggedAt.ToString("yyyy-MM-dd"), weight } };
+        return new { success = true, message = "Weight saved.", entry = new { id = log.Id, date = log.LoggedAt.ToString("yyyy-MM-dd"), weight } };
+    }
+
+    public async Task<object> DeleteWeightAsync(string userId, int id, CancellationToken cancellationToken = default)
+    {
+        var log = await _weightLogRepository.GetByIdAsync(id, cancellationToken);
+        if (log == null || log.UserId != userId)
+            return new { success = false, message = "Weight entry not found." };
+
+        await _weightLogRepository.DeleteAsync(log, cancellationToken);
+        await _weightLogRepository.SaveChangesAsync(cancellationToken);
+        return new { success = true, message = "Weight entry deleted." };
     }
 }

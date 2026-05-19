@@ -6,6 +6,7 @@ public class ApplicationUser : IdentityUser
 {
     public string FullName { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public bool IsBanned { get; set; }
 
     public UserGoal? UserGoal { get; set; }
     public ICollection<Meal> Meals { get; set; } = [];

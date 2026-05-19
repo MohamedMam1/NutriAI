@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NutriAI.Application.Interfaces.Services;
+using NutriAI.Domain.Constants;
 using NutriAI.Extensions;
 
 namespace NutriAI.Controllers;
 
+[Authorize(Roles = Roles.User)]
 public class WaterController : Controller
 {
     private readonly IWaterService _waterService;
