@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NutriAI.Application.DTOs;
 using NutriAI.Application.Interfaces.Services;
+using NutriAI.Domain.Constants;
 using NutriAI.Extensions;
 
 namespace NutriAI.Controllers;
 
+[Authorize(Roles = Roles.User)]
 public class MealTrackerController : Controller
 {
     private readonly IMealTrackerService _mealTrackerService;
@@ -31,7 +34,11 @@ public class MealTrackerController : Controller
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        return Json(await _mealTrackerService.AnalyzeMealAsync(User.GetUserId(), request, cancellationToken));
+        var result = await _mealTrackerService.AnalyzeMealAsync(User.GetUserId(), request, cancellationToken);
+        if (!result.Success)
+            return BadRequest(result);
+
+        return Json(result);
     }
 
     [HttpDelete]

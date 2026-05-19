@@ -1,10 +1,13 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NutriAI.Application.Interfaces.Services;
+using NutriAI.Domain.Constants;
 using NutriAI.Extensions;
 
 namespace NutriAI.Controllers;
 
+[Authorize(Roles = Roles.User)]
 public class RecipeController : Controller
 {
     private readonly IRecipeService _recipeService;

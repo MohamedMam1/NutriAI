@@ -5,7 +5,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await NutriAI.fetchJson('/Report/GetWeeklyData');
         renderStats(data);
         renderCharts(data);
-        renderRecommendations(data.aiRecommendations);
+        if (data.message && data.dataSource === 'database') {
+            NutriAI.showToast(data.message, 'warning');
+        }
+        renderRecommendations(data.aiRecommendations || []);
     } catch {
         NutriAI.showToast('Failed to load report', 'danger');
     }
@@ -27,11 +30,10 @@ function renderStats(data) {
         col.className = 'col-md-6 col-lg';
         col.innerHTML =
             '<div class="card-nutri hover-scale">' +
-            '<motion class="d-flex align-items-center gap-3">' +
-            '<motion class="stat-icon ' + s.color + '"><i class="fas ' + s.icon + '"></i></motion>' +
-            '<motion><p class="card-title mb-0">' + s.label + '</p><p class="stat-value mb-0">' + s.value + '</p></motion>' +
-            '</motion></div>';
-        col.firstChild.innerHTML = col.firstChild.innerHTML.replace(/<\/?motion/g, t => t.replace('motion', 'div'));
+            '<div class="d-flex align-items-center gap-3">' +
+            '<div class="stat-icon ' + s.color + '"><i class="fas ' + s.icon + '"></i></div>' +
+            '<div><p class="card-title mb-0">' + s.label + '</p><p class="stat-value mb-0">' + s.value + '</p></div>' +
+            '</div></div>';
         container.appendChild(col);
     });
 }
@@ -70,6 +72,13 @@ function renderCharts(data) {
 function renderRecommendations(items) {
     const list = document.getElementById('aiRecommendations');
     list.replaceChildren();
+    if (!items.length) {
+        const li = document.createElement('li');
+        li.className = 'small-text text-muted';
+        li.textContent = 'This information is not available right now.';
+        list.appendChild(li);
+        return;
+    }
     items.forEach(text => {
         const li = document.createElement('li');
         li.className = 'mb-2 small-text';
@@ -77,3 +86,4 @@ function renderRecommendations(items) {
         list.appendChild(li);
     });
 }
+

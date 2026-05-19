@@ -27,10 +27,14 @@ async function addWater(amountMl) {
             method: 'POST',
             body: JSON.stringify({ amountMl })
         });
+        if (data.success === false) {
+            NutriAI.showToast(data.message || 'Invalid water amount.', 'danger');
+            return;
+        }
         updateUi(data);
-        NutriAI.showToast('+' + amountMl + 'ml added');
-    } catch {
-        NutriAI.showToast('Failed to add water', 'danger');
+        NutriAI.showToast(data.message || ('+' + amountMl + 'ml added'));
+    } catch (err) {
+        NutriAI.showToast(err.payload?.message || 'Failed to add water', 'danger');
     }
 }
 

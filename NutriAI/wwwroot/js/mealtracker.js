@@ -28,10 +28,20 @@ async function submitMeal(e) {
             method: 'POST',
             body: JSON.stringify({ description })
         });
+
+        if (!result.success) {
+            NutriAI.showToast(result.message || 'Could not analyze this meal.', 'danger');
+            return;
+        }
+
+        if (result.message && result.dataSource === 'database') {
+            NutriAI.showToast(result.message, 'warning');
+        }
+
         appendAiMessage(result);
         loadMeals();
     } catch {
-        NutriAI.showToast('Failed to analyze meal', 'danger');
+        NutriAI.showToast('Failed to analyze meal. Please wait for the AI response and try again.', 'danger');
     } finally {
         showLoading(false);
     }
@@ -51,6 +61,8 @@ function appendUserMessage(text) {
 
 function appendAiMessage(result) {
     const m = result.meal;
+    if (!m) return;
+
     const container = document.getElementById('chatContainer');
     const wrap = document.createElement('div');
     wrap.className = 'chat-message ai d-flex';
@@ -100,7 +112,7 @@ function renderHistory(meals) {
         title.textContent = m.description;
         const meta = document.createElement('span');
         meta.className = 'small-text text-muted';
-        meta.innerHTML = '<br>' + m.time + ' Â· ' + m.calories + ' cal';
+        meta.innerHTML = '<br>' + m.time + ' · ' + m.calories + ' cal';
         info.appendChild(title);
         info.appendChild(meta);
 

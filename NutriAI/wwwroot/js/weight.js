@@ -6,15 +6,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         const weight = parseFloat(document.getElementById('weightInput').value);
         if (!weight) return;
         try {
-            await NutriAI.fetchJson('/Weight/Add', {
+            const result = await NutriAI.fetchJson('/Weight/Add', {
                 method: 'POST',
                 body: JSON.stringify({ weight })
             });
+            if (!result.success) {
+                NutriAI.showToast(result.message || 'Invalid weight value.', 'danger');
+                return;
+            }
             document.getElementById('weightInput').value = '';
-            NutriAI.showToast('Weight saved');
+            NutriAI.showToast(result.message || 'Weight saved');
             await loadWeightData();
-        } catch {
-            NutriAI.showToast('Failed to save weight', 'danger');
+        } catch (err) {
+            NutriAI.showToast(err.payload?.message || 'Failed to save weight', 'danger');
         }
     });
     await loadWeightData();
@@ -42,15 +46,37 @@ function renderHistory(history) {
     list.replaceChildren();
     [...history].reverse().forEach(entry => {
         const row = document.createElement('div');
-        row.className = 'd-flex justify-content-between py-2 border-bottom';
+        row.className = 'd-flex justify-content-between align-items-center py-2 border-bottom gap-2';
         const date = document.createElement('span');
         date.textContent = entry.date;
         const w = document.createElement('strong');
         w.textContent = entry.weight + ' kg';
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-sm btn-outline-danger';
+        btn.innerHTML = '<i class="fas fa-trash"></i>';
+        btn.addEventListener('click', () => deleteWeight(entry.id));
         row.appendChild(date);
-        row.appendChild(w);
+        const right = document.createElement('div');
+        right.className = 'd-flex align-items-center gap-2';
+        right.appendChild(w);
+        right.appendChild(btn);
+        row.appendChild(right);
         list.appendChild(row);
     });
+}
+
+async function deleteWeight(id) {
+    try {
+        const result = await NutriAI.fetchJson('/Weight/Delete?id=' + id, { method: 'DELETE' });
+        if (!result.success) {
+            NutriAI.showToast(result.message || 'Could not delete entry.', 'danger');
+            return;
+        }
+        NutriAI.showToast(result.message || 'Weight entry deleted');
+        await loadWeightData();
+    } catch {
+        NutriAI.showToast('Failed to delete weight entry', 'danger');
+    }
 }
 
 function renderChart(history, goalWeight) {

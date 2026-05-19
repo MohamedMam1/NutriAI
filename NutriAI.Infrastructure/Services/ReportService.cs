@@ -1,5 +1,7 @@
+using System.Globalization;
 using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
+using NutriAI.Application.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NutriAI.Application.Interfaces.Repositories;
@@ -47,7 +49,9 @@ public class ReportService : IReportService
         }
 
         var weekStart = DateTime.UtcNow.Date.AddDays(-6);
-        var labels = Enumerable.Range(0, 7).Select(i => weekStart.AddDays(i).ToString("ddd")).ToArray();
+        var labels = Enumerable.Range(0, 7)
+            .Select(i => weekStart.AddDays(i).ToString("ddd", CultureInfo.InvariantCulture))
+            .ToArray();
         var dailyCalories = new List<int>();
         var weightTrend = new List<double>();
         var hydrationDays = new List<int>();
@@ -87,15 +91,37 @@ public class ReportService : IReportService
         var reportSummary =
             $"Weight change: {weightChange}kg. Avg calories: {avgCalories}/{calorieTarget}. Hydration score: {hydrationScore}%. Best day: {labels[Math.Max(0, bestIdx)]}. Worst day: {labels[Math.Max(0, worstIdx)]}.";
 
-        var recommendations = await _aiService.GetWeeklyRecommendationsAsync(reportSummary, cancellationToken);
-        var tips = recommendations is { Count: >= 3 }
-            ? recommendations.Take(3).ToArray()
-            : new[]
+        string[] tips;
+        string? aiMessage = null;
+        if (_aiService.IsConfigured)
+        {
+            var recommendations = await _aiService.GetWeeklyRecommendationsAsync(reportSummary, cancellationToken);
+            if (recommendations is { Count: >= 3 })
             {
-                "Increase water intake on weekends to maintain hydration consistency.",
-                "Aim for steady protein intake across all days of the week.",
-                "Review your highest calorie day and balance it with lighter meals."
-            };
+                tips = recommendations.Take(3).ToArray();
+            }
+            else
+            {
+                var previousTips = latest != null
+                    ? JsonSerializer.Deserialize<string[]>(latest.RecommendationsJson)
+                    : null;
+                if (previousTips is { Length: >= 1 })
+                {
+                    tips = previousTips.Take(3).ToArray();
+                    aiMessage = AiMessages.AiUnavailableUseDatabase;
+                }
+                else
+                {
+                    tips = [];
+                    aiMessage = AiMessages.InformationUnavailable;
+                }
+            }
+        }
+        else
+        {
+            tips = [];
+            aiMessage = AiMessages.ApiKeyNotConfigured;
+        }
 
         var report = new WeeklyReport
         {
@@ -120,6 +146,8 @@ public class ReportService : IReportService
 
         return new
         {
+            success = true,
+            message = aiMessage,
             weightChange,
             avgCalories,
             calorieTarget,

@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NutriAI.Application.DTOs;
 using NutriAI.Application.Interfaces.Services;
+using NutriAI.Domain.Constants;
 using NutriAI.Extensions;
 using NutriAI.ViewModels.Auth;
 
@@ -11,11 +13,16 @@ public class AuthController : Controller
 {
     private readonly IAuthService _authService;
     private readonly IConfiguration _configuration;
+    private readonly UserManager<Domain.Entities.ApplicationUser> _userManager;
 
-    public AuthController(IAuthService authService, IConfiguration configuration)
+    public AuthController(
+        IAuthService authService,
+        IConfiguration configuration,
+        UserManager<Domain.Entities.ApplicationUser> userManager)
     {
         _authService = authService;
         _configuration = configuration;
+        _userManager = userManager;
     }
 
     [AllowAnonymous, HttpGet]
@@ -41,12 +48,22 @@ public class AuthController : Controller
                 return View(model);
             }
 
+            if (result.ErrorCode == "AccountBanned")
+            {
+                ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault() ?? "Your account has been banned.");
+                return View(model);
+            }
+
             ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault() ?? "Login failed.");
             return View(model);
         }
 
+        var user = await _userManager.FindByEmailAsync(model.Email);
         if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
             return LocalRedirect(model.ReturnUrl);
+
+        if (user != null && await _userManager.IsInRoleAsync(user, Roles.Admin))
+            return RedirectToAction("Index", "Admin");
 
         return RedirectToAction("Index", "Dashboard");
     }

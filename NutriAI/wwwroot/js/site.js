@@ -29,8 +29,13 @@ const NutriAI = {
         }
 
         const response = await fetch(url, { ...options, headers });
-        if (!response.ok) throw new Error('Request failed');
-        return response.json();
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            const err = new Error(data.message || data.title || 'Request failed');
+            err.payload = data;
+            throw err;
+        }
+        return data;
     },
 
     formatNumber(num, decimals = 0) {

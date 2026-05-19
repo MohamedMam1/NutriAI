@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NutriAI.Application.Interfaces.Services;
+using NutriAI.Domain.Constants;
 using NutriAI.Extensions;
 
 namespace NutriAI.Controllers;
 
+[Authorize(Roles = Roles.User)]
 public class WeightController : Controller
 {
     private readonly IWeightService _weightService;
@@ -27,6 +30,10 @@ public class WeightController : Controller
     [HttpPost]
     public async Task<IActionResult> Add([FromBody] WeightAddRequest request, CancellationToken cancellationToken) =>
         Json(await _weightService.AddWeightAsync(User.GetUserId(), request.Weight, cancellationToken));
+
+    [HttpDelete]
+    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken) =>
+        Json(await _weightService.DeleteWeightAsync(User.GetUserId(), id, cancellationToken));
 }
 
 public class WeightAddRequest

@@ -1,3 +1,6 @@
+using System.Text.Json;
+using NutriAI.Application.Common;
+using NutriAI.Application.DTOs;
 using NutriAI.Application.Interfaces.Repositories;
 using NutriAI.Application.Interfaces.Services;
 using NutriAI.Domain.Entities;
@@ -7,26 +10,41 @@ namespace NutriAI.Infrastructure.Services;
 
 public class MealPlannerService : IMealPlannerService
 {
+    private static readonly string[] Days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
     private readonly IMealPlanRepository _mealPlanRepository;
     private readonly IUserGoalRepository _userGoalRepository;
     private readonly IAiNutritionService _aiService;
-
-    private static readonly string[] Days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    private readonly IFallbackNutritionRepository _fallbackRepository;
 
     public MealPlannerService(
         IMealPlanRepository mealPlanRepository,
         IUserGoalRepository userGoalRepository,
-        IAiNutritionService aiService)
+        IAiNutritionService aiService,
+        IFallbackNutritionRepository fallbackRepository)
     {
         _mealPlanRepository = mealPlanRepository;
         _userGoalRepository = userGoalRepository;
         _aiService = aiService;
+        _fallbackRepository = fallbackRepository;
     }
 
     public async Task<object> GeneratePlanAsync(string userId, double goalWeight, int timelineWeeks, string dietaryPreference, CancellationToken cancellationToken = default)
     {
+        if (!_aiService.IsConfigured)
+        {
+            return new
+            {
+                success = false,
+                message = AiMessages.ApiKeyNotConfigured,
+                dataSource = AiDataSource.Unavailable
+            };
+        }
+
         var goal = await _userGoalRepository.GetByUserIdAsync(userId, cancellationToken);
         var context = NutritionContextHelper.FromGoal(goal);
+        var dataSource = AiDataSource.Ai;
+        var userMessage = string.Empty;
 
         var plan = new MealPlan
         {
@@ -41,7 +59,90 @@ public class MealPlannerService : IMealPlannerService
         var aiDays = await _aiService.GenerateMealPlanAsync(goalWeight, timelineWeeks, dietaryPreference, context, cancellationToken);
         if (aiDays is { Count: > 0 })
         {
-            foreach (var day in aiDays)
+            ApplyAiDays(plan, aiDays);
+        }
+        else
+        {
+            var existing = await _fallbackRepository.GetLatestUserMealPlanAsync(userId, dietaryPreference, cancellationToken);
+            if (existing?.Items.Count > 0)
+            {
+                CopyPlanItems(plan, existing);
+                dataSource = AiDataSource.Database;
+                userMessage = AiMessages.AiUnavailableUseDatabase;
+            }
+            else
+            {
+                var template = await _fallbackRepository.GetMealPlanTemplateAsync(dietaryPreference, cancellationToken);
+                if (template != null && ApplySeedPlanJson(plan, template.PlanJson))
+                {
+                    dataSource = AiDataSource.Database;
+                    userMessage = AiMessages.AiUnavailableUseDatabase;
+                }
+                else
+                {
+                    return new
+                    {
+                        success = false,
+                        message = AiMessages.InformationUnavailable,
+                        dataSource = AiDataSource.Unavailable
+                    };
+                }
+            }
+        }
+
+        await _mealPlanRepository.AddAsync(plan, cancellationToken);
+        await _mealPlanRepository.SaveChangesAsync(cancellationToken);
+
+        return BuildResponse(plan, goalWeight, timelineWeeks, dietaryPreference, dataSource, userMessage);
+    }
+
+    private static void ApplyAiDays(MealPlan plan, IReadOnlyList<MealPlanDayResult> aiDays)
+    {
+        foreach (var day in aiDays)
+        {
+            foreach (var meal in day.Meals)
+            {
+                plan.Items.Add(new MealPlanItem
+                {
+                    DayName = day.Day,
+                    MealType = meal.MealType,
+                    Name = meal.Name,
+                    Calories = meal.Calories,
+                    Protein = meal.Protein,
+                    Carbs = meal.Carbs,
+                    Fat = meal.Fat,
+                    Instructions = meal.Instructions
+                });
+            }
+        }
+    }
+
+    private static void CopyPlanItems(MealPlan target, MealPlan source)
+    {
+        foreach (var item in source.Items)
+        {
+            target.Items.Add(new MealPlanItem
+            {
+                DayName = item.DayName,
+                MealType = item.MealType,
+                Name = item.Name,
+                Calories = item.Calories,
+                Protein = item.Protein,
+                Carbs = item.Carbs,
+                Fat = item.Fat,
+                Instructions = item.Instructions
+            });
+        }
+    }
+
+    private static bool ApplySeedPlanJson(MealPlan plan, string planJson)
+    {
+        try
+        {
+            var days = JsonSerializer.Deserialize<List<SeedPlanDay>>(planJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            if (days == null || days.Count == 0) return false;
+
+            foreach (var day in days)
             {
                 foreach (var meal in day.Meals)
                 {
@@ -58,27 +159,24 @@ public class MealPlannerService : IMealPlannerService
                     });
                 }
             }
+
+            return plan.Items.Count > 0;
         }
-        else
+        catch
         {
-            foreach (var day in Days)
-            {
-                plan.Items.Add(CreateItem(day, "Breakfast", "Balanced breakfast bowl", 380, "Prepare oats, fruit, and protein."));
-                plan.Items.Add(CreateItem(day, "Lunch", "Lean protein lunch", 520, "Grill protein with vegetables and whole grains."));
-                plan.Items.Add(CreateItem(day, "Dinner", "Light dinner plate", 480, "Bake or steam dinner with greens."));
-                plan.Items.Add(CreateItem(day, "Snacks", "Healthy snack", 200, "Portion nuts or yogurt with fruit."));
-            }
+            return false;
         }
+    }
 
-        await _mealPlanRepository.AddAsync(plan, cancellationToken);
-        await _mealPlanRepository.SaveChangesAsync(cancellationToken);
-
-        return new
+    private static object BuildResponse(MealPlan plan, double goalWeight, int timelineWeeks, string preference, string dataSource, string userMessage) =>
+        new
         {
             success = true,
+            message = string.IsNullOrEmpty(userMessage) ? "Meal plan generated successfully." : userMessage,
+            dataSource,
             goalWeight,
             timelineWeeks,
-            preference = dietaryPreference,
+            preference,
             weeklyPlan = Days.Select(day => new
             {
                 day,
@@ -94,18 +192,21 @@ public class MealPlannerService : IMealPlannerService
                 })
             })
         };
+
+    private sealed class SeedPlanDay
+    {
+        public string Day { get; set; } = string.Empty;
+        public List<SeedPlanMeal> Meals { get; set; } = [];
     }
 
-    private static MealPlanItem CreateItem(string day, string type, string name, int calories, string instructions) =>
-        new()
-        {
-            DayName = day,
-            MealType = type,
-            Name = name,
-            Calories = calories,
-            Protein = 25,
-            Carbs = 40,
-            Fat = 12,
-            Instructions = instructions
-        };
+    private sealed class SeedPlanMeal
+    {
+        public string MealType { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public int Calories { get; set; }
+        public double Protein { get; set; }
+        public double Carbs { get; set; }
+        public double Fat { get; set; }
+        public string Instructions { get; set; } = string.Empty;
+    }
 }

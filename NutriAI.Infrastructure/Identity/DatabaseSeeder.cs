@@ -22,6 +22,7 @@ public static class DatabaseSeeder
         var adminSettings = scope.ServiceProvider.GetRequiredService<IOptions<AdminSeedSettings>>().Value;
 
         await context.Database.MigrateAsync();
+        await NutritionFallbackSeeder.SeedAsync(context);
 
         foreach (var role in new[] { Roles.Admin, Roles.User })
         {
@@ -49,7 +50,6 @@ public static class DatabaseSeeder
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(admin, Roles.Admin);
-                await userManager.AddToRoleAsync(admin, Roles.User);
                 logger.LogInformation("Default admin account created: {Email}", adminSettings.Email);
             }
             else
@@ -57,9 +57,13 @@ public static class DatabaseSeeder
                 logger.LogWarning("Failed to create admin: {Errors}", string.Join(", ", result.Errors.Select(e => e.Description)));
             }
         }
-        else if (!await userManager.IsInRoleAsync(admin, Roles.Admin))
+        else
         {
-            await userManager.AddToRoleAsync(admin, Roles.Admin);
+            if (!await userManager.IsInRoleAsync(admin, Roles.Admin))
+                await userManager.AddToRoleAsync(admin, Roles.Admin);
+
+            if (await userManager.IsInRoleAsync(admin, Roles.User))
+                await userManager.RemoveFromRoleAsync(admin, Roles.User);
         }
     }
 }

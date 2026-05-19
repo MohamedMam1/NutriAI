@@ -17,7 +17,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-nutri sticky-top">
         <div class="container">
-            <a class="navbar-brand" asp-controller="Dashboard" asp-action="Index">
+            <a class="navbar-brand" asp-controller="@(User.IsInRole(Roles.Admin) ? "Admin" : "Dashboard")" asp-action="Index">
                 <i class="fas fa-leaf me-2"></i>NutriAI
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
@@ -26,6 +26,8 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarMain">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    @if (User.IsInRole(Roles.User))
+                    {
                     <li class="nav-item">
                         <a class="nav-link @(ViewData["ActiveNav"]?.ToString() == "Dashboard" ? "active" : "")"
                            asp-controller="Dashboard" asp-action="Index">
@@ -74,6 +76,7 @@
                             <i class="fas fa-user me-1"></i> Profile
                         </a>
                     </li>
+                    }
                 </ul>
                 <div class="d-flex align-items-center gap-2">
                     @if (User.IsInRole(Roles.Admin))
@@ -125,4 +128,5 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
 
